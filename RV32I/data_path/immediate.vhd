@@ -36,6 +36,8 @@ begin
    process (opcode) is
    begin
       case opcode(6 downto 2) is
+         when "00000" =>
+            instruction_type <= i_type_instruction;
          when "01100" =>
             instruction_type <= r_type_instruction;
          when "00100" =>

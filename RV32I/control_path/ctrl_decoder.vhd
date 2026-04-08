@@ -17,9 +17,14 @@ entity ctrl_decoder is
 end entity;
 
 architecture behavioral of ctrl_decoder is
+   constant LOAD_OPCODE_C   : std_logic_vector(4 downto 0) := "00000";
+   constant STORE_OPCODE_C  : std_logic_vector(4 downto 0) := "01000";
+   constant R_TYPE_OPCODE_C : std_logic_vector(4 downto 0) := "01100";
+   constant I_TYPE_OPCODE_C : std_logic_vector(4 downto 0) := "00100";
+   constant B_TYPE_OPCODE_C : std_logic_vector(4 downto 0) := "11000";
 begin
 
-   contol_dec : process(opcode_i)is
+   control_dec : process(opcode_i)is
    begin
       --***Podrazumevane vrednost***
       branch_o      <= '0';
@@ -30,26 +35,27 @@ begin
       alu_2bit_op_o <= "00";
       --****************************      
       case opcode_i(6 downto 2) is
-         when "00000" =>                --LOAD, 5v ~ funct3
+         when LOAD_OPCODE_C =>          --LOAD
             alu_2bit_op_o <= "00";
             mem_to_reg_o  <= '1';
             alu_src_o     <= '1';
             rd_we_o       <= '1';
-         when "01000" =>                --STORE, 3v ~ funct3
+         when STORE_OPCODE_C =>         --STORE
             alu_2bit_op_o <= "00";
             data_mem_we_o <= '1';
             alu_src_o     <= '1';
-         when "01100" =>                --R type, 
+         when R_TYPE_OPCODE_C =>        --R type: add, sub, and, or, andn
             alu_2bit_op_o <= "10";
             rd_we_o       <= '1';
-         when "00100" =>                --I type
+         when I_TYPE_OPCODE_C =>        --I type: addi, clz, ctz, cpop
             alu_2bit_op_o <= "11";
             alu_src_o     <= '1';
             rd_we_o       <= '1';
-         when "11000" =>                --B type BEQ
+         when B_TYPE_OPCODE_C =>        --B type: beq
             alu_2bit_op_o <= "01";
             branch_o      <= '1';
          when others =>
+            null;
       end case;
    end process;
 

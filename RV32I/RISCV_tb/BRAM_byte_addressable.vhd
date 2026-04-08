@@ -34,7 +34,7 @@ begin
    process(clk)
    begin
       if(rising_edge(clk)) then
-         if(en_a_i = '1') then
+         if(en_a_i = '1' and not is_x(addr_a_i)) then
             if(we_a_i(3) = '1') then
                ram_s(to_integer(unsigned(addr_a_i)+3)) <= data_a_i(31 downto 24);
             end if;
@@ -48,7 +48,7 @@ begin
                ram_s(to_integer(unsigned(addr_a_i))) <= data_a_i(7 downto 0);
             end if;
          end if;
-         if(en_b_i = '1') then
+         if(en_b_i = '1' and not is_x(addr_b_i)) then
             if(we_b_i(3) = '1') then
                ram_s(to_integer(unsigned(addr_b_i)+3)) <= data_b_i(31 downto 24);
             end if;
@@ -69,16 +69,24 @@ begin
    process(en_a_i, en_b_i, addr_a_i, addr_b_i)
    begin
       if(en_a_i = '1') then
-         data_a_o(31 downto 24) <= ram_s(to_integer(unsigned(addr_a_i)+3));
-         data_a_o(23 downto 16) <= ram_s(to_integer(unsigned(addr_a_i)+2));
-         data_a_o(15 downto 8)  <= ram_s(to_integer(unsigned(addr_a_i)+1));
-         data_a_o(7 downto 0)   <= ram_s(to_integer(unsigned(addr_a_i)));
+         if (not is_x(addr_a_i)) then
+            data_a_o(31 downto 24) <= ram_s(to_integer(unsigned(addr_a_i)+3));
+            data_a_o(23 downto 16) <= ram_s(to_integer(unsigned(addr_a_i)+2));
+            data_a_o(15 downto 8)  <= ram_s(to_integer(unsigned(addr_a_i)+1));
+            data_a_o(7 downto 0)   <= ram_s(to_integer(unsigned(addr_a_i)));
+         else
+            data_a_o <= (others => '0');
+         end if;
       end if;
       if(en_b_i = '1') then
-         data_b_o(31 downto 24) <= ram_s(to_integer(unsigned(addr_b_i)+3));
-         data_b_o(23 downto 16) <= ram_s(to_integer(unsigned(addr_b_i)+2));
-         data_b_o(15 downto 8)  <= ram_s(to_integer(unsigned(addr_b_i)+1));
-         data_b_o(7 downto 0)   <= ram_s(to_integer(unsigned(addr_b_i)));
+         if (not is_x(addr_b_i)) then
+            data_b_o(31 downto 24) <= ram_s(to_integer(unsigned(addr_b_i)+3));
+            data_b_o(23 downto 16) <= ram_s(to_integer(unsigned(addr_b_i)+2));
+            data_b_o(15 downto 8)  <= ram_s(to_integer(unsigned(addr_b_i)+1));
+            data_b_o(7 downto 0)   <= ram_s(to_integer(unsigned(addr_b_i)));
+         else
+            data_b_o <= (others => '0');
+         end if;
       end if;
    end process;
 

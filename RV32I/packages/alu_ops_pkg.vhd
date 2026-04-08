@@ -15,6 +15,10 @@ package alu_ops_pkg is
    constant sll_op    : std_logic_vector (4 downto 0) := "10110";  ---> shift left logic
    constant srl_op    : std_logic_vector (4 downto 0) := "00111";  ---> shift right logic
    constant sra_op    : std_logic_vector (4 downto 0) := "01000";  ---> shift right arithmetic
+   constant andn_op   : std_logic_vector (4 downto 0) := "10001";  ---> bitwise and with inverted rs2
+   constant clz_op    : std_logic_vector (4 downto 0) := "10010";  ---> count leading zeros
+   constant ctz_op    : std_logic_vector (4 downto 0) := "10011";  ---> count trailing zeros
+   constant cpop_op   : std_logic_vector (4 downto 0) := "00100";  ---> count set bits
    constant mulu_op   : std_logic_vector (4 downto 0) := "01001";  ---> multiply lower
    constant mulhs_op  : std_logic_vector (4 downto 0) := "01010";  ---> multiply higher signed
    constant mulhsu_op : std_logic_vector (4 downto 0) := "01011";  ---> multiply higher signed and unsigned
