@@ -15,6 +15,7 @@ end entity;
 architecture Behavioral of TOP_RISCV_tb is
    constant SCENARIO_RV32I_C : integer := 0;
    constant SCENARIO_ZBB_C   : integer := 1;
+   constant SCENARIO_EXTENDED_C : integer := 2;
 
    type word_array_t is array (natural range <>) of std_logic_vector(31 downto 0);
    type addr_array_t is array (natural range <>) of natural;
@@ -51,6 +52,31 @@ architecture Behavioral of TOP_RISCV_tb is
       x"F00FF00F",
       x"FFFFFFFF",
       x"FFFFF000");
+
+   -- ulazi i ocekivani store rezultati za prosireni cpu demo
+   constant EXT_INPUT_ADDRS_C : addr_array_t(0 to 5) := (0, 4, 8, 12, 16, 20);
+   constant EXT_INPUT_DATA_C  : word_array_t(0 to 5) := (
+      x"00FF00FF",
+      x"FFFF0000",
+      x"0000F000",
+      x"00000010",
+      x"F0F0F0F0",
+      x"1234FF80");
+   constant EXT_EXPECT_ADDRS_C : addr_array_t(0 to 12) := (80, 84, 88, 92, 96, 100, 104, 108, 24, 112, 116, 120, 124);
+   constant EXT_EXPECT_DATA_C  : word_array_t(0 to 12) := (
+      x"FF0000FF",
+      x"0000001F",
+      x"00000080",
+      x"00000001",
+      x"00000002",
+      x"00000003",
+      x"FFFFFF80",
+      x"00000080",
+      x"00000010",
+      x"00000010",
+      x"00000004",
+      x"00000005",
+      x"00000006");
 
    signal clk                          : std_logic := '0';
    signal reset                        : std_logic := '0';
@@ -208,6 +234,13 @@ begin
                web_data_s   <= (others => '1');
                wait until rising_edge(clk);
             end loop;
+         when SCENARIO_EXTENDED_C =>
+            for i in EXT_INPUT_ADDRS_C'range loop
+               addrb_data_s <= std_logic_vector(to_unsigned(EXT_INPUT_ADDRS_C(i), addrb_data_s'length));
+               dinb_data_s  <= EXT_INPUT_DATA_C(i);
+               web_data_s   <= (others => '1');
+               wait until rising_edge(clk);
+            end loop;
          when others =>
             for i in ZBB_INPUT_ADDRS_C'range loop
                addrb_data_s <= std_logic_vector(to_unsigned(ZBB_INPUT_ADDRS_C(i), addrb_data_s'length));
@@ -251,6 +284,21 @@ begin
                   store_index_v := store_index_v + 1;
                   if (store_index_v = RV32I_EXPECT_ADDRS_C'length) then
                      report "RV32I regression CPU test passed" severity note;
+                     finish;
+                  end if;
+               when SCENARIO_EXTENDED_C =>
+                  assert store_index_v <= EXT_EXPECT_ADDRS_C'high
+                     report "Unexpected extra store in extended CPU scenario"
+                     severity failure;
+                  assert addra_data_32_s = slv32(EXT_EXPECT_ADDRS_C(store_index_v))
+                     report "Unexpected extended store address at index " & integer'image(store_index_v)
+                     severity failure;
+                  assert dina_data_s = EXT_EXPECT_DATA_C(store_index_v)
+                     report "Unexpected extended store data at index " & integer'image(store_index_v)
+                     severity failure;
+                  store_index_v := store_index_v + 1;
+                  if (store_index_v = EXT_EXPECT_ADDRS_C'length) then
+                     report "Extended CPU demo test passed" severity note;
                      finish;
                   end if;
                when others =>

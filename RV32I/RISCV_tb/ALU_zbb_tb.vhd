@@ -45,7 +45,9 @@ begin
    begin
       check_case("andn_mixed_mask", x"FFFF0000", x"00FF00FF", andn_op, x"FF000000");
       check_case("orn_mixed_mask", x"FFFF0000", x"00FF00FF", orn_op, x"FFFFFF00");
+      check_case("xor_mixed_mask", x"00FF00FF", x"FFFF0000", xor_op, x"FF0000FF");
       check_case("xnor_mixed_mask", x"FFFF0000", x"00FF00FF", xnor_op, x"00FFFF00");
+      check_case("sll_by_three", x"00000010", x"00000003", sll_op, x"00000080");
 
       check_case("clz_zero", x"00000000", x"00000000", clz_op, x"00000020");
       check_case("clz_msb_set", x"80000000", x"00000000", clz_op, x"00000000");

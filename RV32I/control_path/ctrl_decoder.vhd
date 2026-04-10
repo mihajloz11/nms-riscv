@@ -18,10 +18,12 @@ end entity;
 
 architecture behavioral of ctrl_decoder is
    constant LOAD_OPCODE_C   : std_logic_vector(4 downto 0) := "00000";
+   constant MISC_MEM_OPCODE_C : std_logic_vector(4 downto 0) := "00011";
    constant STORE_OPCODE_C  : std_logic_vector(4 downto 0) := "01000";
    constant R_TYPE_OPCODE_C : std_logic_vector(4 downto 0) := "01100";
    constant I_TYPE_OPCODE_C : std_logic_vector(4 downto 0) := "00100";
    constant B_TYPE_OPCODE_C : std_logic_vector(4 downto 0) := "11000";
+   constant SYSTEM_OPCODE_C : std_logic_vector(4 downto 0) := "11100";
 begin
 
    control_dec : process(opcode_i)is
@@ -35,25 +37,29 @@ begin
       alu_2bit_op_o <= "00";
       --****************************      
       case opcode_i(6 downto 2) is
-         when LOAD_OPCODE_C =>          --LOAD
+         when LOAD_OPCODE_C =>          --LOAD: lw, lb, lbu
             alu_2bit_op_o <= "00";
             mem_to_reg_o  <= '1';
             alu_src_o     <= '1';
             rd_we_o       <= '1';
-         when STORE_OPCODE_C =>         --STORE
+         when MISC_MEM_OPCODE_C =>      --MISC MEM: fence kao no-op
+            null;
+         when STORE_OPCODE_C =>         --STORE: sw, sb
             alu_2bit_op_o <= "00";
             data_mem_we_o <= '1';
             alu_src_o     <= '1';
-         when R_TYPE_OPCODE_C =>        --R type: add, sub, and, or, andn, orn, xnor, rol, ror
+         when R_TYPE_OPCODE_C =>        --R type: add, sub, and, or, xor...
             alu_2bit_op_o <= "10";
             rd_we_o       <= '1';
-         when I_TYPE_OPCODE_C =>        --I type: addi, clz, ctz, cpop, sext.b, sext.h
+         when I_TYPE_OPCODE_C =>        --I type: addi, xori, slli, clz...
             alu_2bit_op_o <= "11";
             alu_src_o     <= '1';
             rd_we_o       <= '1';
-         when B_TYPE_OPCODE_C =>        --B type: beq
+         when B_TYPE_OPCODE_C =>        --B type: beq, bne, blt, bge
             alu_2bit_op_o <= "01";
             branch_o      <= '1';
+         when SYSTEM_OPCODE_C =>        --SYSTEM: ecall i ebreak kao no-op
+            null;
          when others =>
             null;
       end case;

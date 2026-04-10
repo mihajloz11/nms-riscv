@@ -48,7 +48,7 @@ begin
                      alu_op_o <= andn_op;
                   end if;
                when "100" =>
-                  alu_op_o <= add_op;
+                  alu_op_o <= xor_op;
                   if (alu_2bit_op_i = "10" and funct7_i = "0100000") then
                      alu_op_o <= xnor_op;
                   end if;
@@ -66,12 +66,12 @@ begin
                         when x"605" =>
                            alu_op_o <= signexth_op;
                         when others =>
-                           alu_op_o <= add_op;
+                           alu_op_o <= sll_op;
                      end case;
                   elsif (alu_2bit_op_i = "10" and funct7_i = "0110000") then
                      alu_op_o <= rol_op;
                   else
-                     alu_op_o <= add_op;
+                     alu_op_o <= sll_op;
                   end if;
                when "101" =>
                   alu_op_o <= add_op;

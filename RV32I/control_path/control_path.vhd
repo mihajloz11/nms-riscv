@@ -53,8 +53,21 @@ begin
          funct12_i     => instruction_i(31 downto 20),
          alu_op_o      => alu_op_o);
 
-   --***************Izlazi************************
-   data_mem_we_o <= (others => (data_mem_we_s));
+   -- Za sw se upisuju sva 4 bajta, a za sb samo najnizi bajt.
+   process (data_mem_we_s, instruction_i) is
+   begin
+      data_mem_we_o <= (others => '0');
+      if (data_mem_we_s = '1') then
+         case instruction_i(14 downto 12) is
+            when "000" =>
+               data_mem_we_o <= "0001";
+            when "010" =>
+               data_mem_we_o <= "1111";
+            when others =>
+               data_mem_we_o <= (others => '0');
+         end case;
+      end if;
+   end process;
 
 
 end architecture;

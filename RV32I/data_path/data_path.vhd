@@ -32,6 +32,7 @@ end entity;
 
 
 architecture Behavioral of data_path is
+   constant LOAD_OPCODE_C : std_logic_vector(6 downto 0) := "0000011";
    --**************REGISTRI*********************************   
    signal pc_reg_s, pc_next_s                   : std_logic_vector (31 downto 0);
    --********************************************************
@@ -40,13 +41,11 @@ architecture Behavioral of data_path is
    signal pc_adder_s                            : std_logic_vector(31 downto 0);
    signal branch_adder_s                        : std_logic_vector(31 downto 0);
    signal rs1_data_s, rs2_data_s, rd_data_s     : std_logic_vector (31 downto 0);
-   signal immediate_extended_s, extended_data_s : std_logic_vector(31 downto 0);
+   signal immediate_extended_s, load_data_s     : std_logic_vector(31 downto 0);
    -- AlU signali   
    signal alu_zero_s, alu_of_o_s                : std_logic;
    signal b_s, a_s                              : std_logic_vector(31 downto 0);
    signal alu_result_s                          : std_logic_vector(31 downto 0);
-   --Signali grananja (eng. branch signals).   
-   signal bcc                                   : std_logic;
 --********************************************************
 begin
 
@@ -64,16 +63,36 @@ begin
    --*****************************************************
 
    --***********Kombinaciona logika***********************
-   bcc <= instruction_s(12);
-
    -- sabirac za uvecavanje programskog brojaca (sledeca instrukcija)
    pc_adder_s     <= std_logic_vector(unsigned(pc_reg_s) + to_unsigned(4, DATA_WIDTH));
    -- sabirac za uslovne skokove
    branch_adder_s <= std_logic_vector(unsigned(immediate_extended_s) + unsigned(pc_reg_s));
 
-   -- Provera uslova skoka
-   branch_condition_o <= '1' when a_s = b_s else
-                         '0';
+   -- Za grananja gledamo funct3 polje i onda proveravamo odgovarajuci uslov.
+   process (instruction_s, a_s, b_s) is
+   begin
+      branch_condition_o <= '0';
+      case instruction_s(14 downto 12) is
+         when "000" =>
+            if (a_s = b_s) then
+               branch_condition_o <= '1';
+            end if;
+         when "001" =>
+            if (a_s /= b_s) then
+               branch_condition_o <= '1';
+            end if;
+         when "100" =>
+            if (signed(a_s) < signed(b_s)) then
+               branch_condition_o <= '1';
+            end if;
+         when "101" =>
+            if (signed(a_s) >= signed(b_s)) then
+               branch_condition_o <= '1';
+            end if;
+         when others =>
+            null;
+      end case;
+   end process;
 
    -- MUX koji odredjuje sledecu vrednost za programski brojac.
    -- Ako se ne desi skok programski brojac se uvecava za 4.
@@ -87,8 +106,24 @@ begin
    -- Azuriranje a ulaza ALU jedinice
    a_s <= rs1_data_s;
 
+   -- Za lb i lbu uzima se samo najnizi bajt procitan sa adrese.
+   process (instruction_s, data_mem_read_i) is
+   begin
+      load_data_s <= data_mem_read_i;
+      if (instruction_s(6 downto 0) = LOAD_OPCODE_C) then
+         case instruction_s(14 downto 12) is
+            when "000" =>
+               load_data_s <= std_logic_vector(resize(signed(data_mem_read_i(7 downto 0)), DATA_WIDTH));
+            when "100" =>
+               load_data_s <= std_logic_vector(resize(unsigned(data_mem_read_i(7 downto 0)), DATA_WIDTH));
+            when others =>
+               load_data_s <= data_mem_read_i;
+         end case;
+      end if;
+   end process;
+
    -- MUX koji odredjuje sta se upisuje u odredisni registar(rd_data_s)
-   rd_data_s <= data_mem_read_i when mem_to_reg_i = '1' else
+   rd_data_s <= load_data_s when mem_to_reg_i = '1' else
                 alu_result_s;
    --*****************************************************
 
@@ -141,5 +176,4 @@ begin
    data_mem_address_o  <= alu_result_s;
    data_mem_write_o    <= rs2_data_s;
 end architecture;
-
 

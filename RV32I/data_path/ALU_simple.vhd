@@ -121,7 +121,7 @@ ARCHITECTURE behavioral OF ALU IS
       return std_logic_vector(shift_right(unsigned(vec), shift_v) or shift_left(unsigned(vec), vec'length - shift_v));
    end function;
 
-   signal add_res, sub_res, or_res, orn_res, and_res, andn_res, xnor_res, clz_res, ctz_res, cpop_res, rol_res, ror_res, signextb_res, signexth_res, res_s :
+   signal add_res, sub_res, or_res, orn_res, and_res, andn_res, xor_res, xnor_res, sll_res, clz_res, ctz_res, cpop_res, rol_res, ror_res, signextb_res, signexth_res, res_s :
       STD_LOGIC_VECTOR(WIDTH-1 DOWNTO 0);
 BEGIN
 
@@ -133,12 +133,16 @@ BEGIN
    and_res <= a_i and b_i;
    -- andn = rs1 and not rs2
    andn_res <= a_i and (not b_i);
+   -- bitovski xor
+   xor_res <= a_i xor b_i;
    -- bitovski or
    or_res <= a_i or b_i;
    -- orn = rs1 or not rs2
    orn_res <= a_i or (not b_i);
    -- xnor = not(rs1 xor rs2)
    xnor_res <= not (a_i xor b_i);
+   -- sll koristi samo 5 nizih bita drugog operanda
+   sll_res <= std_logic_vector(shift_left(unsigned(a_i), get_shift_amount(b_i(4 downto 0))));
    -- zbb operacije nad jednim operandom
    clz_res <= count_leading_zeros(a_i);
    ctz_res <= count_trailing_zeros(a_i);
@@ -155,8 +159,10 @@ BEGIN
    with op_i select
       res_s <= and_res  when and_op,
                or_res   when or_op,
+               xor_res  when xor_op,
                add_res  when add_op,
                sub_res  when sub_op,
+               sll_res  when sll_op,
                andn_res when andn_op,
                orn_res  when orn_op,
                xnor_res when xnor_op,
