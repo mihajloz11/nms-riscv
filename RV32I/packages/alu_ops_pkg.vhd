@@ -23,6 +23,8 @@ package alu_ops_pkg is
    constant cpop_op   : std_logic_vector (4 downto 0) := "00100";  ---> count set bits
    constant rol_op    : std_logic_vector (4 downto 0) := "11001";  ---> rotate left
    constant ror_op    : std_logic_vector (4 downto 0) := "11010";  ---> rotate right
+   constant signextb_op : std_logic_vector (4 downto 0) := "11011"; ---> sign extend byte
+   constant signexth_op : std_logic_vector (4 downto 0) := "11100"; ---> sign extend halfword
    constant mulu_op   : std_logic_vector (4 downto 0) := "01001";  ---> multiply lower
    constant mulhs_op  : std_logic_vector (4 downto 0) := "01010";  ---> multiply higher signed
    constant mulhsu_op : std_logic_vector (4 downto 0) := "01011";  ---> multiply higher signed and unsigned

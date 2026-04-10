@@ -12,6 +12,8 @@ Implementirane instrukcije:
 - `cpop`
 - `rol`
 - `ror`
+- `sign-extend byte (sext.b)`
+- `sign-extend halfword (sext.h)`
 
 Osnovna ideja projekta:
 - polazna baza je single-cycle RV32I procesor

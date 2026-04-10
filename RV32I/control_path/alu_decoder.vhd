@@ -61,6 +61,10 @@ begin
                            alu_op_o <= ctz_op;
                         when x"602" =>
                            alu_op_o <= cpop_op;
+                        when x"604" =>
+                           alu_op_o <= signextb_op;
+                        when x"605" =>
+                           alu_op_o <= signexth_op;
                         when others =>
                            alu_op_o <= add_op;
                      end case;

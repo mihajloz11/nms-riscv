@@ -54,6 +54,32 @@ ARCHITECTURE behavioral OF ALU IS
       return std_logic_vector(to_unsigned(count_v, vec'length));
    end function;
 
+   function sign_extend_byte(vec : std_logic_vector) return std_logic_vector is
+      variable result_v : std_logic_vector(vec'range);
+      variable sign_v   : std_logic := '0';
+   begin
+      result_v := (others => '0');
+      sign_v := vec(7);
+      result_v(7 downto 0) := vec(7 downto 0);
+      for i in 8 to vec'length - 1 loop
+         result_v(i) := sign_v;
+      end loop;
+      return result_v;
+   end function;
+
+   function sign_extend_halfword(vec : std_logic_vector) return std_logic_vector is
+      variable result_v : std_logic_vector(vec'range);
+      variable sign_v   : std_logic := '0';
+   begin
+      result_v := (others => '0');
+      sign_v := vec(15);
+      result_v(15 downto 0) := vec(15 downto 0);
+      for i in 16 to vec'length - 1 loop
+         result_v(i) := sign_v;
+      end loop;
+      return result_v;
+   end function;
+
    function rotate_left_simple(vec : std_logic_vector; shamt : natural) return std_logic_vector is
       variable shift_v : natural := 0;
    begin
@@ -95,7 +121,7 @@ ARCHITECTURE behavioral OF ALU IS
       return std_logic_vector(shift_right(unsigned(vec), shift_v) or shift_left(unsigned(vec), vec'length - shift_v));
    end function;
 
-   signal add_res, sub_res, or_res, orn_res, and_res, andn_res, xnor_res, clz_res, ctz_res, cpop_res, rol_res, ror_res, res_s :
+   signal add_res, sub_res, or_res, orn_res, and_res, andn_res, xnor_res, clz_res, ctz_res, cpop_res, rol_res, ror_res, signextb_res, signexth_res, res_s :
       STD_LOGIC_VECTOR(WIDTH-1 DOWNTO 0);
 BEGIN
 
@@ -120,6 +146,9 @@ BEGIN
    -- rol i ror koriste samo 5 nizih bita drugog operanda
    rol_res <= rotate_left_simple(a_i, get_shift_amount(b_i(4 downto 0)));
    ror_res <= rotate_right_simple(a_i, get_shift_amount(b_i(4 downto 0)));
+   -- sign extension iz manjeg dela registra
+   signextb_res <= sign_extend_byte(a_i);
+   signexth_res <= sign_extend_halfword(a_i);
 
    -- izbor rezultata
    res_o <= res_s;
@@ -136,6 +165,8 @@ BEGIN
                cpop_res when cpop_op,
                rol_res  when rol_op,
                ror_res  when ror_op,
+               signextb_res when signextb_op,
+               signexth_res when signexth_op,
                (others => '1') when others;
 
    -- Postavlja zero_o na 1 ukoliko je rezultat operacije 0

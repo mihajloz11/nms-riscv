@@ -213,7 +213,7 @@
         <Option Name="LogicalNoCTop" Val=""/>
         <Option Name="LogicalNoCTopLib" Val=""/>
         <Option Name="Dmv" Val=""/>
-        <Option Name="xsim.simulate.runtime" Val="10000ns"/>
+        <Option Name="xsim.simulate.runtime" Val="12000ns"/>
         <Generic Name="SCENARIO_ID_G" Val="1"/>
       </Config>
     </FileSet>

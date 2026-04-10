@@ -60,6 +60,8 @@ begin
       check_case("cpop_pattern", x"F0F0F0F0", x"00000000", cpop_op, x"00000010");
       check_case("rol_by_four", x"12345678", x"00000004", rol_op, x"23456781");
       check_case("ror_by_four", x"12345678", x"00000004", ror_op, x"81234567");
+      check_case("signextb_negative", x"000000FF", x"00000000", signextb_op, x"FFFFFFFF");
+      check_case("signexth_negative", x"0000F000", x"00000000", signexth_op, x"FFFFF000");
 
       report "ALU Zbb tests passed" severity note;
       finish;
