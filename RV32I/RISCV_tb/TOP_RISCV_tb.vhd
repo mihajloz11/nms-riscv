@@ -39,12 +39,16 @@ architecture Behavioral of TOP_RISCV_tb is
       x"0000F000",
       x"00000010",
       x"F0F0F0F0");
-   constant ZBB_EXPECT_ADDRS_C : addr_array_t(0 to 3) := (32, 36, 40, 44);
-   constant ZBB_EXPECT_DATA_C  : word_array_t(0 to 3) := (
+   constant ZBB_EXPECT_ADDRS_C : addr_array_t(0 to 7) := (32, 36, 40, 44, 48, 52, 56, 60);
+   constant ZBB_EXPECT_DATA_C  : word_array_t(0 to 7) := (
       x"FF000000",
       x"00000010",
       x"00000010",
-      x"00000004");
+      x"00000004",
+      x"FFFFFF00",
+      x"00FFFF00",
+      x"0FF00FF0",
+      x"F00FF00F");
 
    signal clk                          : std_logic := '0';
    signal reset                        : std_logic := '0';

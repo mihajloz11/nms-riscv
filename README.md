@@ -5,9 +5,13 @@ Osnovna arhitektura je prosirena manjim podskupom standardnih RISC-V bit-manipul
 
 Implementirane instrukcije:
 - `andn`
+- `orn`
+- `xnor`
 - `clz`
 - `ctz`
 - `cpop`
+- `rol`
+- `ror`
 
 Osnovna ideja projekta:
 - polazna baza je single-cycle RV32I procesor
@@ -40,4 +44,3 @@ Sta je provereno:
 Napomena:
 - projekat je radjen nad single-cycle bazom, ne nad pipelined varijantom
 - fokus rada je na jasnom prosirenju instruction set-a, bez nepotrebnog komplikovanja arhitekture
-

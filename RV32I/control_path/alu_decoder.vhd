@@ -39,10 +39,18 @@ begin
                   end if;
                when "110" =>
                   alu_op_o <= or_op;
+                  if (alu_2bit_op_i = "10" and funct7_i = "0100000") then
+                     alu_op_o <= orn_op;
+                  end if;
                when "111" =>
                   alu_op_o <= and_op;
                   if (alu_2bit_op_i = "10" and funct7_i = "0100000") then
                      alu_op_o <= andn_op;
+                  end if;
+               when "100" =>
+                  alu_op_o <= add_op;
+                  if (alu_2bit_op_i = "10" and funct7_i = "0100000") then
+                     alu_op_o <= xnor_op;
                   end if;
                when "001" =>
                   if (alu_2bit_op_i = "11") then
@@ -56,11 +64,18 @@ begin
                         when others =>
                            alu_op_o <= add_op;
                      end case;
+                  elsif (alu_2bit_op_i = "10" and funct7_i = "0110000") then
+                     alu_op_o <= rol_op;
                   else
-                     alu_op_o <= and_op;
+                     alu_op_o <= add_op;
+                  end if;
+               when "101" =>
+                  alu_op_o <= add_op;
+                  if (alu_2bit_op_i = "10" and funct7_i = "0110000") then
+                     alu_op_o <= ror_op;
                   end if;
                when others =>
-                  alu_op_o <= and_op;
+                  alu_op_o <= add_op;
             end case;
       end case;
    end process;

@@ -59,8 +59,8 @@ add_files -fileset sim_1 -norecurse ./RV32I/RISCV_project/TOP_RISCV_tb_behav.wcf
 set_property top TOP_RISCV_tb [get_filesets sim_1]
 set_property top_lib xil_defaultlib [get_filesets sim_1]
 set_property generic {SCENARIO_ID_G=1} [get_filesets sim_1]
-set_property runtime 8000ns [get_filesets sim_1]
-set_property xsim.simulate.runtime 8000ns [get_filesets sim_1]
+set_property runtime 10000ns [get_filesets sim_1]
+set_property xsim.simulate.runtime 10000ns [get_filesets sim_1]
 set_property xsim.view [file normalize ./RV32I/RISCV_project/TOP_RISCV_tb_behav.wcfg] [get_filesets sim_1]
 
 update_compile_order -fileset sim_1

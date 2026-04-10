@@ -44,7 +44,7 @@ begin
             alu_2bit_op_o <= "00";
             data_mem_we_o <= '1';
             alu_src_o     <= '1';
-         when R_TYPE_OPCODE_C =>        --R type: add, sub, and, or, andn
+         when R_TYPE_OPCODE_C =>        --R type: add, sub, and, or, andn, orn, xnor, rol, ror
             alu_2bit_op_o <= "10";
             rd_we_o       <= '1';
          when I_TYPE_OPCODE_C =>        --I type: addi, clz, ctz, cpop

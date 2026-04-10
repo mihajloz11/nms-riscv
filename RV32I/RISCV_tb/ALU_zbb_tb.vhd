@@ -44,6 +44,8 @@ begin
       end procedure;
    begin
       check_case("andn_mixed_mask", x"FFFF0000", x"00FF00FF", andn_op, x"FF000000");
+      check_case("orn_mixed_mask", x"FFFF0000", x"00FF00FF", orn_op, x"FFFFFF00");
+      check_case("xnor_mixed_mask", x"FFFF0000", x"00FF00FF", xnor_op, x"00FFFF00");
 
       check_case("clz_zero", x"00000000", x"00000000", clz_op, x"00000020");
       check_case("clz_msb_set", x"80000000", x"00000000", clz_op, x"00000000");
@@ -56,6 +58,8 @@ begin
       check_case("cpop_zero", x"00000000", x"00000000", cpop_op, x"00000000");
       check_case("cpop_all_ones", x"FFFFFFFF", x"00000000", cpop_op, x"00000020");
       check_case("cpop_pattern", x"F0F0F0F0", x"00000000", cpop_op, x"00000010");
+      check_case("rol_by_four", x"12345678", x"00000004", rol_op, x"23456781");
+      check_case("ror_by_four", x"12345678", x"00000004", ror_op, x"81234567");
 
       report "ALU Zbb tests passed" severity note;
       finish;
