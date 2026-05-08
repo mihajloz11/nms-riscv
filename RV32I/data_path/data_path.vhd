@@ -20,8 +20,10 @@ entity data_path is
       -- ********* Kontrolni signali ************************
       mem_to_reg_i        : in  std_logic;
       alu_op_i            : in  std_logic_vector(4 downto 0);
-      pc_next_sel_i       : in  std_logic;
+      pc_next_sel_i       : in  std_logic_vector(1 downto 0);
       alu_src_i           : in  std_logic;
+      alu_src_a_i         : in  std_logic_vector(1 downto 0);
+      rd_src_i            : in  std_logic_vector(1 downto 0);
       rd_we_i             : in  std_logic;
       -- ********* Statusni signali *************************
       branch_condition_o  : out std_logic
@@ -40,6 +42,7 @@ architecture Behavioral of data_path is
    signal instruction_s                         : std_logic_vector(31 downto 0);
    signal pc_adder_s                            : std_logic_vector(31 downto 0);
    signal branch_adder_s                        : std_logic_vector(31 downto 0);
+   signal jalr_adder_s, jalr_next_s             : std_logic_vector(31 downto 0);
    signal rs1_data_s, rs2_data_s, rd_data_s     : std_logic_vector (31 downto 0);
    signal immediate_extended_s, load_data_s     : std_logic_vector(31 downto 0);
    -- AlU signali   
@@ -67,6 +70,9 @@ begin
    pc_adder_s     <= std_logic_vector(unsigned(pc_reg_s) + to_unsigned(4, DATA_WIDTH));
    -- sabirac za uslovne skokove
    branch_adder_s <= std_logic_vector(unsigned(immediate_extended_s) + unsigned(pc_reg_s));
+   -- jalr skok se racuna kao rs1 + immediate, a najnizi bit se postavlja na 0
+   jalr_adder_s <= std_logic_vector(unsigned(rs1_data_s) + unsigned(immediate_extended_s));
+   jalr_next_s  <= jalr_adder_s(31 downto 1) & '0';
 
    -- Za grananja gledamo funct3 polje i onda proveravamo odgovarajuci uslov.
    process (instruction_s, a_s, b_s) is
@@ -89,6 +95,14 @@ begin
             if (signed(a_s) >= signed(b_s)) then
                branch_condition_o <= '1';
             end if;
+         when "110" =>
+            if (unsigned(a_s) < unsigned(b_s)) then
+               branch_condition_o <= '1';
+            end if;
+         when "111" =>
+            if (unsigned(a_s) >= unsigned(b_s)) then
+               branch_condition_o <= '1';
+            end if;
          when others =>
             null;
       end case;
@@ -97,16 +111,29 @@ begin
    -- MUX koji odredjuje sledecu vrednost za programski brojac.
    -- Ako se ne desi skok programski brojac se uvecava za 4.
    with pc_next_sel_i select
-      pc_next_s <= pc_adder_s when '0',
-      branch_adder_s          when others;
+      pc_next_s <= pc_adder_s     when "00",
+                   branch_adder_s when "01",
+                   jalr_next_s    when "10",
+                   pc_adder_s     when others;
+
+   -- MUX koji odredjuje prvi operand ALU jedinice.
+   process (alu_src_a_i, rs1_data_s, pc_reg_s) is
+   begin
+      case alu_src_a_i is
+         when "00" =>
+            a_s <= rs1_data_s;
+         when "01" =>
+            a_s <= pc_reg_s;
+         when others =>
+            a_s <= (others => '0');
+      end case;
+   end process;
 
    -- MUX koji odredjuje sledecu vrednost za b ulaz ALU jedinice.
    b_s <= rs2_data_s when alu_src_i = '0' else
           immediate_extended_s;
-   -- Azuriranje a ulaza ALU jedinice
-   a_s <= rs1_data_s;
 
-   -- Za lb i lbu uzima se samo najnizi bajt procitan sa adrese.
+   -- Za load instrukcije uzima se onoliko bita koliko instrukcija trazi.
    process (instruction_s, data_mem_read_i) is
    begin
       load_data_s <= data_mem_read_i;
@@ -114,8 +141,12 @@ begin
          case instruction_s(14 downto 12) is
             when "000" =>
                load_data_s <= std_logic_vector(resize(signed(data_mem_read_i(7 downto 0)), DATA_WIDTH));
+            when "001" =>
+               load_data_s <= std_logic_vector(resize(signed(data_mem_read_i(15 downto 0)), DATA_WIDTH));
             when "100" =>
                load_data_s <= std_logic_vector(resize(unsigned(data_mem_read_i(7 downto 0)), DATA_WIDTH));
+            when "101" =>
+               load_data_s <= std_logic_vector(resize(unsigned(data_mem_read_i(15 downto 0)), DATA_WIDTH));
             when others =>
                load_data_s <= data_mem_read_i;
          end case;
@@ -123,8 +154,17 @@ begin
    end process;
 
    -- MUX koji odredjuje sta se upisuje u odredisni registar(rd_data_s)
-   rd_data_s <= load_data_s when mem_to_reg_i = '1' else
-                alu_result_s;
+   process (rd_src_i, load_data_s, alu_result_s, pc_adder_s) is
+   begin
+      case rd_src_i is
+         when "01" =>
+            rd_data_s <= load_data_s;
+         when "10" =>
+            rd_data_s <= pc_adder_s;
+         when others =>
+            rd_data_s <= alu_result_s;
+      end case;
+   end process;
    --*****************************************************
 
    --***********Instanciranja*****************************
@@ -176,4 +216,3 @@ begin
    data_mem_address_o  <= alu_result_s;
    data_mem_write_o    <= rs2_data_s;
 end architecture;
-

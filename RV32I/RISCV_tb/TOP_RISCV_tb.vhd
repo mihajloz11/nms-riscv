@@ -62,8 +62,12 @@ architecture Behavioral of TOP_RISCV_tb is
       x"00000010",
       x"F0F0F0F0",
       x"1234FF80");
-   constant EXT_EXPECT_ADDRS_C : addr_array_t(0 to 12) := (80, 84, 88, 92, 96, 100, 104, 108, 24, 112, 116, 120, 124);
-   constant EXT_EXPECT_DATA_C  : word_array_t(0 to 12) := (
+   constant EXT_EXPECT_ADDRS_C : addr_array_t(0 to 45) := (
+      80, 84, 88, 92, 96, 100, 104, 108, 24, 112, 116, 120, 124,
+      128, 132, 136, 140, 144, 148, 152, 156, 160, 164, 168, 172,
+      176, 28, 180, 184, 188, 192, 196,
+      200, 204, 208, 212, 216, 220, 224, 228, 232, 236, 240, 244, 248, 256);
+   constant EXT_EXPECT_DATA_C  : word_array_t(0 to 45) := (
       x"FF0000FF",
       x"0000001F",
       x"00000080",
@@ -76,7 +80,40 @@ architecture Behavioral of TOP_RISCV_tb is
       x"00000010",
       x"00000004",
       x"00000005",
-      x"00000006");
+      x"00000006",
+      x"12345000",
+      x"000000A0",
+      x"00000001",
+      x"00000000",
+      x"00000001",
+      x"00000000",
+      x"0FFFFFFF",
+      x"FFFFFFFF",
+      x"7FFFFFFF",
+      x"FFFFFFFF",
+      x"000000A0",
+      x"FFFFFF80",
+      x"0000FF80",
+      x"0000FF80",
+      x"0000FF80",
+      x"00000005",
+      x"00000007",
+      x"0000013C",
+      x"0000014C",
+      x"FFFFFFBF",
+      x"FFFFFFFF",
+      x"00000004",
+      x"FFFFFFFF",
+      x"FFFFFFFE",
+      x"33333330",
+      x"FFFFFFFD",
+      x"00000003",
+      x"FFFFFFFF",
+      x"FFFFFFF3",
+      x"80000000",
+      x"00000000",
+      x"00000003",
+      x"000001E4");
 
    signal clk                          : std_logic := '0';
    signal reset                        : std_logic := '0';
@@ -324,7 +361,7 @@ begin
    timeout_proc : process
    begin
       wait until reset = '1';
-      wait for 20 us;
+      wait for 60 us;
       assert false report "CPU-level test timed out" severity failure;
    end process;
 

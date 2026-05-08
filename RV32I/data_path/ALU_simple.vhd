@@ -121,7 +121,96 @@ ARCHITECTURE behavioral OF ALU IS
       return std_logic_vector(shift_right(unsigned(vec), shift_v) or shift_left(unsigned(vec), vec'length - shift_v));
    end function;
 
-   signal add_res, sub_res, or_res, orn_res, and_res, andn_res, xor_res, xnor_res, sll_res, clz_res, ctz_res, cpop_res, rol_res, ror_res, signextb_res, signexth_res, res_s :
+   function multiply_lower(a_vec : std_logic_vector; b_vec : std_logic_vector) return std_logic_vector is
+      variable product_v : signed((2 * a_vec'length) - 1 downto 0);
+   begin
+      product_v := signed(a_vec) * signed(b_vec);
+      return std_logic_vector(product_v(a_vec'length - 1 downto 0));
+   end function;
+
+   function multiply_high_signed(a_vec : std_logic_vector; b_vec : std_logic_vector) return std_logic_vector is
+      variable product_v : signed((2 * a_vec'length) - 1 downto 0);
+   begin
+      product_v := signed(a_vec) * signed(b_vec);
+      return std_logic_vector(product_v((2 * a_vec'length) - 1 downto a_vec'length));
+   end function;
+
+   function multiply_high_signed_unsigned(a_vec : std_logic_vector; b_vec : std_logic_vector) return std_logic_vector is
+      variable product_v : signed((4 * a_vec'length) - 1 downto 0);
+   begin
+      product_v := resize(signed(a_vec), 2 * a_vec'length) * signed(resize(unsigned(b_vec), 2 * b_vec'length));
+      return std_logic_vector(product_v((2 * a_vec'length) - 1 downto a_vec'length));
+   end function;
+
+   function multiply_high_unsigned(a_vec : std_logic_vector; b_vec : std_logic_vector) return std_logic_vector is
+      variable product_v : unsigned((2 * a_vec'length) - 1 downto 0);
+   begin
+      product_v := unsigned(a_vec) * unsigned(b_vec);
+      return std_logic_vector(product_v((2 * a_vec'length) - 1 downto a_vec'length));
+   end function;
+
+   function is_most_negative(a_vec : std_logic_vector) return boolean is
+      variable min_v : std_logic_vector(a_vec'range);
+   begin
+      min_v := (others => '0');
+      min_v(a_vec'left) := '1';
+      return a_vec = min_v;
+   end function;
+
+   function is_minus_one(a_vec : std_logic_vector) return boolean is
+      variable minus_one_v : std_logic_vector(a_vec'range);
+   begin
+      minus_one_v := (others => '1');
+      return a_vec = minus_one_v;
+   end function;
+
+   function divide_signed_simple(a_vec : std_logic_vector; b_vec : std_logic_vector) return std_logic_vector is
+      variable result_v : std_logic_vector(a_vec'range);
+   begin
+      if unsigned(b_vec) = 0 then
+         result_v := (others => '1');
+         return result_v;
+      elsif is_most_negative(a_vec) and is_minus_one(b_vec) then
+         return a_vec;
+      else
+         return std_logic_vector(signed(a_vec) / signed(b_vec));
+      end if;
+   end function;
+
+   function divide_unsigned_simple(a_vec : std_logic_vector; b_vec : std_logic_vector) return std_logic_vector is
+      variable result_v : std_logic_vector(a_vec'range);
+   begin
+      if unsigned(b_vec) = 0 then
+         result_v := (others => '1');
+         return result_v;
+      else
+         return std_logic_vector(unsigned(a_vec) / unsigned(b_vec));
+      end if;
+   end function;
+
+   function reminder_signed_simple(a_vec : std_logic_vector; b_vec : std_logic_vector) return std_logic_vector is
+      variable result_v : std_logic_vector(a_vec'range);
+   begin
+      if unsigned(b_vec) = 0 then
+         return a_vec;
+      elsif is_most_negative(a_vec) and is_minus_one(b_vec) then
+         result_v := (others => '0');
+         return result_v;
+      else
+         return std_logic_vector(signed(a_vec) rem signed(b_vec));
+      end if;
+   end function;
+
+   function reminder_unsigned_simple(a_vec : std_logic_vector; b_vec : std_logic_vector) return std_logic_vector is
+   begin
+      if unsigned(b_vec) = 0 then
+         return a_vec;
+      else
+         return std_logic_vector(unsigned(a_vec) rem unsigned(b_vec));
+      end if;
+   end function;
+
+   signal add_res, sub_res, or_res, orn_res, and_res, andn_res, xor_res, xnor_res, sll_res, srl_res, sra_res, eq_res, lts_res, ltu_res, clz_res, ctz_res, cpop_res, rol_res, ror_res, signextb_res, signexth_res, mul_res, mulhs_res, mulhsu_res, mulhu_res, divs_res, divu_res, rems_res, remu_res, res_s :
       STD_LOGIC_VECTOR(WIDTH-1 DOWNTO 0);
 BEGIN
 
@@ -143,6 +232,17 @@ BEGIN
    xnor_res <= not (a_i xor b_i);
    -- sll koristi samo 5 nizih bita drugog operanda
    sll_res <= std_logic_vector(shift_left(unsigned(a_i), get_shift_amount(b_i(4 downto 0))));
+   -- logicki pomjeraj udesno
+   srl_res <= std_logic_vector(shift_right(unsigned(a_i), get_shift_amount(b_i(4 downto 0))));
+   -- aritmeticki pomjeraj udesno cuva znak broja
+   sra_res <= std_logic_vector(shift_right(signed(a_i), get_shift_amount(b_i(4 downto 0))));
+   -- poredjenja vracaju 1 ako je uslov tacan, inace 0
+   eq_res <= std_logic_vector(to_unsigned(1, WIDTH)) when a_i = b_i else
+             (others => '0');
+   lts_res <= std_logic_vector(to_unsigned(1, WIDTH)) when signed(a_i) < signed(b_i) else
+              (others => '0');
+   ltu_res <= std_logic_vector(to_unsigned(1, WIDTH)) when unsigned(a_i) < unsigned(b_i) else
+              (others => '0');
    -- zbb operacije nad jednim operandom
    clz_res <= count_leading_zeros(a_i);
    ctz_res <= count_trailing_zeros(a_i);
@@ -153,6 +253,15 @@ BEGIN
    -- sign extension iz manjeg dela registra
    signextb_res <= sign_extend_byte(a_i);
    signexth_res <= sign_extend_halfword(a_i);
+   -- M prosirenje
+   mul_res <= multiply_lower(a_i, b_i);
+   mulhs_res <= multiply_high_signed(a_i, b_i);
+   mulhsu_res <= multiply_high_signed_unsigned(a_i, b_i);
+   mulhu_res <= multiply_high_unsigned(a_i, b_i);
+   divs_res <= divide_signed_simple(a_i, b_i);
+   divu_res <= divide_unsigned_simple(a_i, b_i);
+   rems_res <= reminder_signed_simple(a_i, b_i);
+   remu_res <= reminder_unsigned_simple(a_i, b_i);
 
    -- izbor rezultata
    res_o <= res_s;
@@ -162,7 +271,12 @@ BEGIN
                xor_res  when xor_op,
                add_res  when add_op,
                sub_res  when sub_op,
+               eq_res   when eq_op,
+               lts_res  when lts_op,
+               ltu_res  when ltu_op,
                sll_res  when sll_op,
+               srl_res  when srl_op,
+               sra_res  when sra_op,
                andn_res when andn_op,
                orn_res  when orn_op,
                xnor_res when xnor_op,
@@ -173,6 +287,14 @@ BEGIN
                ror_res  when ror_op,
                signextb_res when signextb_op,
                signexth_res when signexth_op,
+               mul_res  when mulu_op,
+               mulhs_res when mulhs_op,
+               mulhsu_res when mulhsu_op,
+               mulhu_res when mulhu_op,
+               divs_res when divs_op,
+               divu_res when divu_op,
+               rems_res when rems_op,
+               remu_res when remu_op,
                (others => '1') when others;
 
    -- Postavlja zero_o na 1 ukoliko je rezultat operacije 0

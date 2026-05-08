@@ -10,8 +10,10 @@ entity control_path is
          -- ********* Kontrolni intefejs ************************************* 
          mem_to_reg_o       : out std_logic;
          alu_op_o           : out std_logic_vector(4 downto 0);
-         pc_next_sel_o      : out  std_logic;         
+         pc_next_sel_o      : out std_logic_vector(1 downto 0);
          alu_src_o          : out std_logic;
+         alu_src_a_o        : out std_logic_vector(1 downto 0);
+         rd_src_o           : out std_logic_vector(1 downto 0);
          rd_we_o            : out std_logic;         
          --********** Ulazni Statusni interfejs **************************************
          branch_condition_i : in  std_logic;
@@ -25,13 +27,19 @@ architecture behavioral of control_path is
    signal alu_2bit_op_s : std_logic_vector(1 downto 0);
    signal data_mem_we_s : std_logic;
    signal branch_s: std_logic;
+   signal jump_s: std_logic;
+   signal jalr_s: std_logic;
 begin
 
-   process (branch_condition_i, branch_s)is
+   process (branch_condition_i, branch_s, jump_s, jalr_s)is
    begin
-      pc_next_sel_o <= '0';
-      if (branch_s = '1' and branch_condition_i = '1')then
-         pc_next_sel_o <= '1';
+      pc_next_sel_o <= "00";
+      if (jalr_s = '1') then
+         pc_next_sel_o <= "10";
+      elsif (jump_s = '1') then
+         pc_next_sel_o <= "01";
+      elsif (branch_s = '1' and branch_condition_i = '1')then
+         pc_next_sel_o <= "01";
       end if;
    end process;
                     
@@ -42,8 +50,12 @@ begin
          mem_to_reg_o  => mem_to_reg_o,
          data_mem_we_o => data_mem_we_s,
          alu_src_o     => alu_src_o,
+         alu_src_a_o   => alu_src_a_o,
+         rd_src_o      => rd_src_o,
          rd_we_o       => rd_we_o,
-         alu_2bit_op_o => alu_2bit_op_s);
+         alu_2bit_op_o => alu_2bit_op_s,
+         jump_o        => jump_s,
+         jalr_o        => jalr_s);
 
    alu_dec : entity work.alu_decoder(behavioral)
       port map(
@@ -53,7 +65,7 @@ begin
          funct12_i     => instruction_i(31 downto 20),
          alu_op_o      => alu_op_o);
 
-   -- Za sw se upisuju sva 4 bajta, a za sb samo najnizi bajt.
+   -- Za sb se upisuje 1 bajt, za sh 2 bajta, a za sw sva 4 bajta.
    process (data_mem_we_s, instruction_i) is
    begin
       data_mem_we_o <= (others => '0');
@@ -61,6 +73,8 @@ begin
          case instruction_i(14 downto 12) is
             when "000" =>
                data_mem_we_o <= "0001";
+            when "001" =>
+               data_mem_we_o <= "0011";
             when "010" =>
                data_mem_we_o <= "1111";
             when others =>
