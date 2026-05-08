@@ -5,26 +5,26 @@ use std.textio.all;
 use std.env.all;
 use work.txt_util.all;
 
-entity TOP_RISCV_tb is
+entity TOP_testovi is
    generic (
       SCENARIO_ID_G : integer := 1;
-      PROGRAM_PATH_G : string := "RV32I/RISCV_tb/assembly_code_active.txt"
+      PROGRAM_PATH_G : string := "rv32i/testovi/assembly_code_active.txt"
       );
 end entity;
 
-architecture Behavioral of TOP_RISCV_tb is
-   constant SCENARIO_RV32I_C : integer := 0;
-   constant SCENARIO_ZBB_C   : integer := 1;
+architecture behavioral of TOP_testovi is
+   constant SCENARIO_rv32i_C : integer := 0;
+   constant SCENARIO_ZBB_C : integer := 1;
    constant SCENARIO_EXTENDED_C : integer := 2;
 
    type word_array_t is array (natural range <>) of std_logic_vector(31 downto 0);
    type addr_array_t is array (natural range <>) of natural;
 
    -- ulazi i ocekivani store rezultati za rv32i regresiju
-   constant RV32I_INPUT_ADDRS_C : addr_array_t(0 to 1) := (0, 4);
-   constant RV32I_INPUT_DATA_C  : word_array_t(0 to 1) := (x"00000005", x"00000007");
-   constant RV32I_EXPECT_ADDRS_C : addr_array_t(0 to 5) := (32, 36, 40, 44, 48, 52);
-   constant RV32I_EXPECT_DATA_C  : word_array_t(0 to 5) := (
+   constant rv32i_INPUT_ADDRS_C : addr_array_t(0 to 1) := (0, 4);
+   constant rv32i_INPUT_DATA_C : word_array_t(0 to 1) := (x"00000005", x"00000007");
+   constant rv32i_EXPECT_ADDRS_C : addr_array_t(0 to 5) := (32, 36, 40, 44, 48, 52);
+   constant rv32i_EXPECT_DATA_C : word_array_t(0 to 5) := (
       x"0000000C",
       x"00000002",
       x"00000005",
@@ -34,14 +34,14 @@ architecture Behavioral of TOP_RISCV_tb is
 
    -- ulazi i ocekivani store rezultati za zbb demo
    constant ZBB_INPUT_ADDRS_C : addr_array_t(0 to 4) := (0, 4, 8, 12, 16);
-   constant ZBB_INPUT_DATA_C  : word_array_t(0 to 4) := (
+   constant ZBB_INPUT_DATA_C : word_array_t(0 to 4) := (
       x"00FF00FF",
       x"FFFF0000",
       x"0000F000",
       x"00000010",
       x"F0F0F0F0");
    constant ZBB_EXPECT_ADDRS_C : addr_array_t(0 to 9) := (32, 36, 40, 44, 48, 52, 56, 60, 64, 68);
-   constant ZBB_EXPECT_DATA_C  : word_array_t(0 to 9) := (
+   constant ZBB_EXPECT_DATA_C : word_array_t(0 to 9) := (
       x"FF000000",
       x"00000010",
       x"00000010",
@@ -55,7 +55,7 @@ architecture Behavioral of TOP_RISCV_tb is
 
    -- ulazi i ocekivani store rezultati za prosireni cpu demo
    constant EXT_INPUT_ADDRS_C : addr_array_t(0 to 5) := (0, 4, 8, 12, 16, 20);
-   constant EXT_INPUT_DATA_C  : word_array_t(0 to 5) := (
+   constant EXT_INPUT_DATA_C : word_array_t(0 to 5) := (
       x"00FF00FF",
       x"FFFF0000",
       x"0000F000",
@@ -67,7 +67,7 @@ architecture Behavioral of TOP_RISCV_tb is
       128, 132, 136, 140, 144, 148, 152, 156, 160, 164, 168, 172,
       176, 28, 180, 184, 188, 192, 196,
       200, 204, 208, 212, 216, 220, 224, 228, 232, 236, 240, 244, 248, 256);
-   constant EXT_EXPECT_DATA_C  : word_array_t(0 to 45) := (
+   constant EXT_EXPECT_DATA_C : word_array_t(0 to 45) := (
       x"FF0000FF",
       x"0000001F",
       x"00000080",
@@ -115,30 +115,30 @@ architecture Behavioral of TOP_RISCV_tb is
       x"00000003",
       x"000001E4");
 
-   signal clk                          : std_logic := '0';
-   signal reset                        : std_logic := '0';
-   signal ena_instr_s                  : std_logic := '1';
-   signal enb_instr_s                  : std_logic;
-   signal wea_instr_s                  : std_logic_vector(3 downto 0) := (others => '0');
-   signal web_instr_s                  : std_logic_vector(3 downto 0) := (others => '0');
-   signal addra_instr_s                : std_logic_vector(9 downto 0) := (others => '0');
-   signal addrb_instr_s                : std_logic_vector(9 downto 0);
-   signal dina_instr_s                 : std_logic_vector(31 downto 0) := (others => '0');
-   signal dinb_instr_s                 : std_logic_vector(31 downto 0) := (others => '0');
+   signal clk : std_logic := '0';
+   signal reset : std_logic := '0';
+   signal ena_instr_s : std_logic := '1';
+   signal enb_instr_s : std_logic;
+   signal wea_instr_s : std_logic_vector(3 downto 0) := (others => '0');
+   signal web_instr_s : std_logic_vector(3 downto 0) := (others => '0');
+   signal addra_instr_s : std_logic_vector(9 downto 0) := (others => '0');
+   signal addrb_instr_s : std_logic_vector(9 downto 0);
+   signal dina_instr_s : std_logic_vector(31 downto 0) := (others => '0');
+   signal dinb_instr_s : std_logic_vector(31 downto 0) := (others => '0');
    signal douta_instr_s, doutb_instr_s : std_logic_vector(31 downto 0);
-   signal addrb_instr_32_s             : std_logic_vector(31 downto 0) := (others => '0');
-   signal ena_data_s                   : std_logic;
-   signal enb_data_s                   : std_logic := '1';
-   signal wea_data_s                   : std_logic_vector(3 downto 0) := (others => '0');
-   signal web_data_s                   : std_logic_vector(3 downto 0) := (others => '0');
-   signal addra_data_s                 : std_logic_vector(9 downto 0);
-   signal addrb_data_s                 : std_logic_vector(9 downto 0) := (others => '0');
-   signal dina_data_s                  : std_logic_vector(31 downto 0) := (others => '0');
-   signal dinb_data_s                  : std_logic_vector(31 downto 0) := (others => '0');
-   signal douta_data_s, doutb_data_s   : std_logic_vector(31 downto 0);
-   signal addra_data_32_s              : std_logic_vector(31 downto 0) := (others => '0');
-   signal instr_mem_cpu_s              : std_logic_vector(31 downto 0);
-   signal data_mem_cpu_s               : std_logic_vector(31 downto 0);
+   signal addrb_instr_32_s : std_logic_vector(31 downto 0) := (others => '0');
+   signal ena_data_s : std_logic;
+   signal enb_data_s : std_logic := '1';
+   signal wea_data_s : std_logic_vector(3 downto 0) := (others => '0');
+   signal web_data_s : std_logic_vector(3 downto 0) := (others => '0');
+   signal addra_data_s : std_logic_vector(9 downto 0);
+   signal addrb_data_s : std_logic_vector(9 downto 0) := (others => '0');
+   signal dina_data_s : std_logic_vector(31 downto 0) := (others => '0');
+   signal dinb_data_s : std_logic_vector(31 downto 0) := (others => '0');
+   signal douta_data_s, doutb_data_s : std_logic_vector(31 downto 0);
+   signal addra_data_32_s : std_logic_vector(31 downto 0) := (others => '0');
+   signal instr_mem_cpu_s : std_logic_vector(31 downto 0);
+   signal data_mem_cpu_s : std_logic_vector(31 downto 0);
 
    function slv32(value : natural) return std_logic_vector is
    begin
@@ -153,10 +153,10 @@ architecture Behavioral of TOP_RISCV_tb is
 
    function slv_to_hex(value : std_logic_vector) return string is
       constant NIBBLE_COUNT_C : natural := value'length / 4;
-      variable result_v       : string(1 to NIBBLE_COUNT_C);
-      variable nibble_v       : unsigned(3 downto 0);
-      variable hi_v           : integer;
-      variable lo_v           : integer;
+      variable result_v : string(1 to NIBBLE_COUNT_C);
+      variable nibble_v : unsigned(3 downto 0);
+      variable hi_v : integer;
+      variable lo_v : integer;
    begin
       for i in 0 to NIBBLE_COUNT_C - 1 loop
          hi_v := value'length - 1 - (i * 4);
@@ -175,12 +175,12 @@ architecture Behavioral of TOP_RISCV_tb is
          return;
       end if;
 
-      file_open(status_v, instructions_f, "RV32I/RISCV_tb/assembly_code_active.txt", read_mode);
+      file_open(status_v, instructions_f, "rv32i/testovi/assembly_code_active.txt", read_mode);
       if (status_v = open_ok) then
          return;
       end if;
 
-      file_open(status_v, instructions_f, "../../../../../RISCV_tb/assembly_code_active.txt", read_mode);
+      file_open(status_v, instructions_f, "../../../../../testovi/assembly_code_active.txt", read_mode);
       if (status_v = open_ok) then
          return;
       end if;
@@ -192,54 +192,54 @@ architecture Behavioral of TOP_RISCV_tb is
 
 begin
 
-   enb_instr_s   <= reset;
+   enb_instr_s <= reset;
    addrb_instr_s <= addrb_instr_32_s(9 downto 0);
    instr_mem_cpu_s <= doutb_instr_s when reset = '1' else (others => '0');
 
    addra_data_s <= addra_data_32_s(9 downto 0);
-   ena_data_s   <= reset;
+   ena_data_s <= reset;
    data_mem_cpu_s <= douta_data_s when reset = '1' else (others => '0');
 
    instruction_mem : entity work.BRAM(behavioral)
-      generic map(WADDR => 10)
+      generic map (WADDR => 10)
       port map (
-         clk      => clk,
-         en_a_i   => ena_instr_s,
-         we_a_i   => wea_instr_s,
+         clk => clk,
+         en_a_i => ena_instr_s,
+         we_a_i => wea_instr_s,
          addr_a_i => addra_instr_s,
          data_a_i => dina_instr_s,
          data_a_o => douta_instr_s,
-         en_b_i   => enb_instr_s,
-         we_b_i   => web_instr_s,
+         en_b_i => enb_instr_s,
+         we_b_i => web_instr_s,
          addr_b_i => addrb_instr_s,
          data_b_i => dinb_instr_s,
          data_b_o => doutb_instr_s);
 
    data_mem : entity work.BRAM(behavioral)
-      generic map(WADDR => 10)
+      generic map (WADDR => 10)
       port map (
-         clk      => clk,
-         en_a_i   => ena_data_s,
-         we_a_i   => wea_data_s,
+         clk => clk,
+         en_a_i => ena_data_s,
+         we_a_i => wea_data_s,
          addr_a_i => addra_data_s,
          data_a_i => dina_data_s,
          data_a_o => douta_data_s,
-         en_b_i   => enb_data_s,
-         we_b_i   => web_data_s,
+         en_b_i => enb_data_s,
+         we_b_i => web_data_s,
          addr_b_i => addrb_data_s,
          data_b_i => dinb_data_s,
          data_b_o => doutb_data_s);
 
    TOP_RISCV_1 : entity work.TOP_RISCV
       port map (
-         clk                 => clk,
-         reset               => reset,
-         instr_mem_read_i    => instr_mem_cpu_s,
+         clk => clk,
+         reset => reset,
+         instr_mem_read_i => instr_mem_cpu_s,
          instr_mem_address_o => addrb_instr_32_s,
-         data_mem_we_o       => wea_data_s,
-         data_mem_address_o  => addra_data_32_s,
-         data_mem_read_i     => data_mem_cpu_s,
-         data_mem_write_o    => dina_data_s);
+         data_mem_we_o => wea_data_s,
+         data_mem_address_o => addra_data_32_s,
+         data_mem_read_i => data_mem_cpu_s,
+         data_mem_write_o => dina_data_s);
 
    init_proc : process
       file RISCV_instructions_v : text;
@@ -255,7 +255,7 @@ begin
          str_read(RISCV_instructions_v, instruction_bits_v);
          if (instruction_bits_v(1) = '0' or instruction_bits_v(1) = '1') then
             addra_instr_s <= std_logic_vector(to_unsigned(instruction_addr_v, addra_instr_s'length));
-            dina_instr_s  <= to_std_logic_vector(instruction_bits_v);
+            dina_instr_s <= to_std_logic_vector(instruction_bits_v);
             instruction_addr_v := instruction_addr_v + 4;
          end if;
          wait until rising_edge(clk);
@@ -264,30 +264,30 @@ begin
       wea_instr_s <= (others => '0');
 
       case SCENARIO_ID_G is
-         when SCENARIO_RV32I_C =>
-            for i in RV32I_INPUT_ADDRS_C'range loop
-               addrb_data_s <= std_logic_vector(to_unsigned(RV32I_INPUT_ADDRS_C(i), addrb_data_s'length));
-               dinb_data_s  <= RV32I_INPUT_DATA_C(i);
-               web_data_s   <= (others => '1');
+         when SCENARIO_rv32i_C =>
+            for i in rv32i_INPUT_ADDRS_C'range loop
+               addrb_data_s <= std_logic_vector(to_unsigned(rv32i_INPUT_ADDRS_C(i), addrb_data_s'length));
+               dinb_data_s <= rv32i_INPUT_DATA_C(i);
+               web_data_s <= (others => '1');
                wait until rising_edge(clk);
             end loop;
          when SCENARIO_EXTENDED_C =>
             for i in EXT_INPUT_ADDRS_C'range loop
                addrb_data_s <= std_logic_vector(to_unsigned(EXT_INPUT_ADDRS_C(i), addrb_data_s'length));
-               dinb_data_s  <= EXT_INPUT_DATA_C(i);
-               web_data_s   <= (others => '1');
+               dinb_data_s <= EXT_INPUT_DATA_C(i);
+               web_data_s <= (others => '1');
                wait until rising_edge(clk);
             end loop;
          when others =>
             for i in ZBB_INPUT_ADDRS_C'range loop
                addrb_data_s <= std_logic_vector(to_unsigned(ZBB_INPUT_ADDRS_C(i), addrb_data_s'length));
-               dinb_data_s  <= ZBB_INPUT_DATA_C(i);
-               web_data_s   <= (others => '1');
+               dinb_data_s <= ZBB_INPUT_DATA_C(i);
+               web_data_s <= (others => '1');
                wait until rising_edge(clk);
             end loop;
       end case;
 
-      web_data_s  <= (others => '0');
+      web_data_s <= (others => '0');
       addrb_data_s <= (others => '0');
       dinb_data_s <= (others => '0');
 
@@ -299,7 +299,7 @@ begin
    monitor_proc : process
       variable store_index_v : natural := 0;
    begin
-      -- provjerava redosled i vrednosti store operacija koje CPU pravi
+      -- provjerava redosled i vrednosti store operacija koje cpu pravi
       wait until reset = '1';
       loop
          wait until rising_edge(clk);
@@ -308,19 +308,19 @@ begin
                " data=0x" & slv_to_hex(dina_data_s)
                severity note;
             case SCENARIO_ID_G is
-               when SCENARIO_RV32I_C =>
-                  assert store_index_v <= RV32I_EXPECT_ADDRS_C'high
-                     report "Unexpected extra store in RV32I regression scenario"
+               when SCENARIO_rv32i_C =>
+                  assert store_index_v <= rv32i_EXPECT_ADDRS_C'high
+                     report "Unexpected extra store in rv32i regression scenario"
                      severity failure;
-                  assert addra_data_32_s = slv32(RV32I_EXPECT_ADDRS_C(store_index_v))
-                     report "Unexpected RV32I store address at index " & integer'image(store_index_v)
+                  assert addra_data_32_s = slv32(rv32i_EXPECT_ADDRS_C(store_index_v))
+                     report "Unexpected rv32i store address at index " & integer'image(store_index_v)
                      severity failure;
-                  assert dina_data_s = RV32I_EXPECT_DATA_C(store_index_v)
-                     report "Unexpected RV32I store data at index " & integer'image(store_index_v)
+                  assert dina_data_s = rv32i_EXPECT_DATA_C(store_index_v)
+                     report "Unexpected rv32i store data at index " & integer'image(store_index_v)
                      severity failure;
                   store_index_v := store_index_v + 1;
-                  if (store_index_v = RV32I_EXPECT_ADDRS_C'length) then
-                     report "RV32I regression CPU test passed" severity note;
+                  if (store_index_v = rv32i_EXPECT_ADDRS_C'length) then
+                     report "rv32i regression CPU test passed" severity note;
                      finish;
                   end if;
                when SCENARIO_EXTENDED_C =>

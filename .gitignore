@@ -1,4 +1,5 @@
 .Xil/
+tmp/
 dfx_runtime.txt
 vivado*.jou
 vivado*.log
@@ -6,6 +7,6 @@ vivado*.str
 vivado_*.backup.jou
 vivado_*.backup.log
 
-RV32I/RISCV_project/*
-!RV32I/RISCV_project/
-!RV32I/RISCV_project/RISCV_project.xpr
+rv32i/vivado_projekat/*
+!rv32i/vivado_projekat/
+!rv32i/vivado_projekat/vivado_projekat.xpr

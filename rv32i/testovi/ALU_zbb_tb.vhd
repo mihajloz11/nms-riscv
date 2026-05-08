@@ -8,34 +8,34 @@ entity ALU_zbb_tb is
 end entity;
 
 architecture behavioral of ALU_zbb_tb is
-   signal a_s    : std_logic_vector(31 downto 0) := (others => '0');
-   signal b_s    : std_logic_vector(31 downto 0) := (others => '0');
-   signal op_s   : std_logic_vector(4 downto 0) := add_op;
-   signal res_s  : std_logic_vector(31 downto 0);
+   signal a_s : std_logic_vector(31 downto 0) := (others => '0');
+   signal b_s : std_logic_vector(31 downto 0) := (others => '0');
+   signal op_s : std_logic_vector(4 downto 0) := add_op;
+   signal res_s : std_logic_vector(31 downto 0);
    signal zero_s : std_logic;
-   signal of_s   : std_logic;
+   signal of_s : std_logic;
 begin
 
    dut : entity work.ALU
       generic map (WIDTH => 32)
       port map (
-         a_i    => a_s,
-         b_i    => b_s,
-         op_i   => op_s,
-         res_o  => res_s,
+         a_i => a_s,
+         b_i => b_s,
+         op_i => op_s,
+         res_o => res_s,
          zero_o => zero_s,
-         of_o   => of_s);
+         of_o => of_s);
 
    stim_proc : process
       procedure check_case (
          constant case_name : in string;
-         constant a_value   : in std_logic_vector(31 downto 0);
-         constant b_value   : in std_logic_vector(31 downto 0);
-         constant op_value  : in std_logic_vector(4 downto 0);
-         constant expected  : in std_logic_vector(31 downto 0)) is
+         constant a_value : in std_logic_vector(31 downto 0);
+         constant b_value : in std_logic_vector(31 downto 0);
+         constant op_value : in std_logic_vector(4 downto 0);
+         constant expected : in std_logic_vector(31 downto 0)) is
       begin
-         a_s  <= a_value;
-         b_s  <= b_value;
+         a_s <= a_value;
+         b_s <= b_value;
          op_s <= op_value;
          wait for 1 ns;
          assert res_s = expected

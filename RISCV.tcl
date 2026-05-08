@@ -1,4 +1,4 @@
-#process for getting script file directory
+# putanja do ove skripte
 variable dispScriptFile [file normalize [info script]]
 proc getScriptDirectory {} {
     variable dispScriptFile
@@ -6,10 +6,10 @@ proc getScriptDirectory {} {
     return $scriptFolder
 }
 
-#change working directory to script file directory
+# radni folder je folder skripte
 cd [getScriptDirectory]
-#set project directory
-set projectDir .\/RV32I/RISCV_project
+# folder vivado projekta
+set projectDir .\/rv32i/vivado_projekat
 
 file mkdir $projectDir
 
@@ -33,36 +33,32 @@ if {$zyboBoardPart eq "" && [file exists $localBoardRepo]} {
     }
 }
 
-# MAKE A PROJECT
-create_project RISCV_project $projectDir -part xc7z010clg400-1 -force
+# pravljenje projekta
+create_project vivado_projekat $projectDir -part xc7z010clg400-1 -force
 if {$zyboBoardPart ne ""} {
     set_property board_part $zyboBoardPart [current_project]
 }
 
-add_files -norecurse ./RV32I/TOP_RISCV.vhd 
-add_files -norecurse ./RV32I/control_path/alu_decoder.vhd 
-add_files -norecurse ./RV32I/data_path/immediate.vhd 
-add_files -norecurse ./RV32I/data_path/ALU_simple.vhd 
-add_files -norecurse ./RV32I/data_path/register_bank.vhd 
-add_files -norecurse ./RV32I/control_path/control_path.vhd 
-add_files -norecurse ./RV32I/control_path/ctrl_decoder.vhd 
-add_files -norecurse ./RV32I/data_path/data_path.vhd
-add_files -norecurse ./RV32I/packages/alu_ops_pkg.vhd 
-add_files -norecurse ./RV32I/packages/txt_util.vhd
+add_files -norecurse ./rv32i/TOP_RISCV.vhd
+add_files -norecurse ./rv32i/kontrola/alu_decoder.vhd
+add_files -norecurse ./rv32i/podaci/immediate.vhd
+add_files -norecurse ./rv32i/podaci/ALU_simple.vhd
+add_files -norecurse ./rv32i/podaci/register_bank.vhd
+add_files -norecurse ./rv32i/kontrola/kontrola.vhd
+add_files -norecurse ./rv32i/kontrola/ctrl_decoder.vhd
+add_files -norecurse ./rv32i/podaci/podaci.vhd
+add_files -norecurse ./rv32i/paketi/alu_ops_pkg.vhd
+add_files -norecurse ./rv32i/paketi/txt_util.vhd
 update_compile_order -fileset sources_1
 set_property SOURCE_SET sources_1 [get_filesets sim_1]
-add_files -fileset sim_1 -norecurse ./RV32I/RISCV_tb/BRAM_byte_addressable.vhd
-add_files -fileset sim_1 -norecurse ./RV32I/RISCV_tb/ALU_zbb_tb.vhd
-add_files -fileset sim_1 -norecurse ./RV32I/RISCV_tb/TOP_RISCV_tb.vhd
-add_files -fileset sim_1 -norecurse ./RV32I/RISCV_project/TOP_RISCV_tb_behav.wcfg
+add_files -fileset sim_1 -norecurse ./rv32i/testovi/BRAM_byte_addressable.vhd
+add_files -fileset sim_1 -norecurse ./rv32i/testovi/ALU_zbb_tb.vhd
+add_files -fileset sim_1 -norecurse ./rv32i/testovi/TOP_testovi.vhd
 
-set_property top TOP_RISCV_tb [get_filesets sim_1]
+set_property top TOP_testovi [get_filesets sim_1]
 set_property top_lib xil_defaultlib [get_filesets sim_1]
 set_property generic {SCENARIO_ID_G=1} [get_filesets sim_1]
 set_property runtime 12000ns [get_filesets sim_1]
 set_property xsim.simulate.runtime 12000ns [get_filesets sim_1]
-set_property xsim.view [file normalize ./RV32I/RISCV_project/TOP_RISCV_tb_behav.wcfg] [get_filesets sim_1]
 
 update_compile_order -fileset sim_1
-
-

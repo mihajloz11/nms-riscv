@@ -83,21 +83,22 @@ Osnovna ideja projekta:
 - provereno je da stare RV32I instrukcije nisu pokvarene
 
 Najvazniji fajlovi:
-- `RV32I/control_path/alu_decoder.vhd` - dekodiranje novih instrukcija
-- `RV32I/control_path/control_path.vhd` - osnovna kontrola grananja, skokova i upisa u memoriju
-- `RV32I/control_path/ctrl_decoder.vhd` - osnovni kontrolni signali
-- `RV32I/data_path/ALU_simple.vhd` - implementacija novih ALU operacija
-- `RV32I/data_path/data_path.vhd` - PC mux, load prosirenja i izbor podatka za upis u registar
-- `RV32I/data_path/immediate.vhd` - I/S/B/U/J immediate prosirenje
-- `RV32I/packages/alu_ops_pkg.vhd` - interni ALU kodovi
-- `RV32I/RISCV_tb/ALU_zbb_tb.vhd` - jednostavan ALU testbench
-- `RV32I/RISCV_tb/TOP_RISCV_tb.vhd` - CPU-level testbench
-- `RV32I/RISCV_tb/test_programs/extended_demo.txt` - demo za dodatne RV32I/RV32M instrukcije i skokove
+- `mapa_projekta.md` - pregled strukture projekta, poredjenje sa vjezbom 2 i opis dodatih instrukcija
+- `rv32i/kontrola/alu_decoder.vhd` - dekodiranje novih instrukcija
+- `rv32i/kontrola/kontrola.vhd` - osnovna kontrola grananja, skokova i upisa u memoriju
+- `rv32i/kontrola/ctrl_decoder.vhd` - osnovni kontrolni signali
+- `rv32i/podaci/ALU_simple.vhd` - implementacija novih ALU operacija
+- `rv32i/podaci/podaci.vhd` - PC mux, load prosirenja i izbor podatka za upis u registar
+- `rv32i/podaci/immediate.vhd` - I/S/B/U/J immediate prosirenje
+- `rv32i/paketi/alu_ops_pkg.vhd` - interni ALU kodovi
+- `rv32i/testovi/ALU_zbb_tb.vhd` - jednostavan ALU testbench
+- `rv32i/testovi/TOP_testovi.vhd` - CPU-level testbench
+- `rv32i/testovi/test_programi/extended_demo.txt` - demo za dodatne RV32I/RV32M instrukcije i skokove
 
 Kako otvoriti projekat u Vivado:
-- otvori `RV32I/RISCV_project/RISCV_project.xpr`
+- otvori `rv32i/vivado_projekat/vivado_projekat.xpr`
 - pokreni `Run Behavioral Simulation`
-- podrazumevani waveform je vec pripremljen za Zbb demo scenario
+- podrazumevani scenario je Zbb demo
 
 Sta je provereno:
 - GHDL simulacija za nove instrukcije

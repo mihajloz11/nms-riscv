@@ -2,18 +2,16 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-
 entity immediate is
-   port (instruction_i        : in  std_logic_vector (31 downto 0);
-         immediate_extended_o : out std_logic_vector (31 downto 0));
+   port (instruction_i : in std_logic_vector(31 downto 0);
+         immediate_extended_o : out std_logic_vector(31 downto 0));
 end entity;
 
-
-architecture Behavioral of immediate is
-   signal opcode           : std_logic_vector(6 downto 0);
+architecture behavioral of immediate is
+   signal opcode : std_logic_vector(6 downto 0);
    signal instruction_type : std_logic_vector(2 downto 0);
-   --signal funct3           : std_logic_vector(2 downto 0);
-   signal extension        : std_logic_vector(19 downto 0);
+   -- signal funct3 : std_logic_vector(2 downto 0);
+   signal extension : std_logic_vector(19 downto 0);
 
    constant r_type_instruction : std_logic_vector(2 downto 0) := "000";
    constant i_type_instruction : std_logic_vector(2 downto 0) := "001";
@@ -21,16 +19,16 @@ architecture Behavioral of immediate is
    constant b_type_instruction : std_logic_vector(2 downto 0) := "011";
    constant u_type_instruction : std_logic_vector(2 downto 0):= "100";
    constant j_type_instruction : std_logic_vector(2 downto 0):= "101";
-   --**Otkomentarisati ukoliko je to potrebno prilikom prosirivanja seta instrukcija**
+   -- otkomentarisati ukoliko je to potrebno prilikom prosirivanja seta instrukcija
 
-   --constant shamt_instruction  : std_logic_vector(2 downto 0):= "110"; 
-   --constant fence_ecall_ebreak : std_logic_vector(2 downto 0):= "111";
+   -- constant shamt_instruction : std_logic_vector(2 downto 0):= "110";
+   -- constant fence_ecall_ebreak : std_logic_vector(2 downto 0):= "111";
 
 begin
 
-   opcode    <= instruction_i(6 downto 0);
+   opcode <= instruction_i(6 downto 0);
    extension <= (others => instruction_i(31));
-   --funct3    <= instruction_i(14 downto 12);
+   -- funct3 <= instruction_i(14 downto 12);
 
    -- u odnosu na opcode pronadji instrukciju
    process (opcode) is

@@ -5,25 +5,23 @@ use work.alu_ops_pkg.all;
 
 entity alu_decoder is
    port (
-      --******** Controlpath ulazi *********
-      alu_2bit_op_i : in  std_logic_vector(1 downto 0);
-      --******** Polja instrukcije *******
-      funct3_i      : in  std_logic_vector (2 downto 0);
-      funct7_i      : in  std_logic_vector (6 downto 0);
-      funct12_i     : in  std_logic_vector (11 downto 0);
-      --******** Datapath izlazi ********
-      alu_op_o      : out std_logic_vector(4 downto 0));
+      -- ulazi iz kontrole
+      alu_2bit_op_i : in std_logic_vector(1 downto 0);
+      -- polja instrukcije
+      funct3_i : in std_logic_vector(2 downto 0);
+      funct7_i : in std_logic_vector(6 downto 0);
+      funct12_i : in std_logic_vector(11 downto 0);
+      -- izlazi ka datapath-u
+      alu_op_o : out std_logic_vector(4 downto 0));
 end entity;
 
 architecture behavioral of alu_decoder is
 begin
 
-   --Kombinaciona logika koja na osnovu informacije iz ctrl_decoder
-   --modula postavlja alu_op_o na odredjenu vrednost, pri cemu ta
-   --vrednost predstavlja zeljenu operaciju.
-   alu_dec : process(alu_2bit_op_i, funct3_i, funct7_i, funct12_i)is
+   -- bira alu operaciju za trenutnu instrukciju
+   alu_dec : process(alu_2bit_op_i, funct3_i, funct7_i, funct12_i) is
    begin
-      alu_op_o <= "00000";              --Podrazumevana vrednost
+      alu_op_o <= "00000"; -- podrazumevana vrednost
 
       case alu_2bit_op_i is
          when "00" =>
@@ -56,7 +54,7 @@ begin
                case funct3_i is
                   when "000" =>
                      alu_op_o <= add_op;
-                     if(alu_2bit_op_i = "10" and funct7_i(5) = '1')then
+                     if (alu_2bit_op_i = "10" and funct7_i(5) = '1') then
                         alu_op_o <= sub_op;
                      end if;
                   when "010" =>

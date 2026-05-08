@@ -1,22 +1,21 @@
-LIBRARY ieee;
-USE ieee.std_logic_1164.ALL;
-USE ieee.numeric_std.ALL;
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 use work.alu_ops_pkg.all;
 
+entity ALU is
+   generic (
+      WIDTH : natural := 32);
+   port (
+      a_i : in std_logic_vector(WIDTH-1 downto 0); -- prvi operand
+      b_i : in std_logic_vector(WIDTH-1 downto 0); -- drugi operand
+      op_i : in std_logic_vector(4 downto 0); -- port za izbor operacije
+      res_o : out std_logic_vector(WIDTH-1 downto 0); -- rezultat
+      zero_o : out std_logic; -- signal da je rezultat nula
+      of_o : out std_logic); -- signal da je doslo do prekoracenja opsega
+end ALU;
 
-ENTITY ALU IS
-   GENERIC(
-      WIDTH : NATURAL := 32);
-   PORT(
-      a_i    : in STD_LOGIC_VECTOR(WIDTH-1 DOWNTO 0); --prvi operand
-      b_i    : in STD_LOGIC_VECTOR(WIDTH-1 DOWNTO 0); --drugi operand
-      op_i   : in STD_LOGIC_VECTOR(4 DOWNTO 0); --port za izbor operacije
-      res_o  : out STD_LOGIC_VECTOR(WIDTH-1 DOWNTO 0); --rezultat
-      zero_o : out STD_LOGIC; -- signal da je rezultat nula
-      of_o   : out STD_LOGIC); -- signal da je doslo do prekoracenja opsega
-END ALU;
-
-ARCHITECTURE behavioral OF ALU IS
+architecture behavioral of ALU is
    function count_leading_zeros(vec : std_logic_vector) return std_logic_vector is
       variable count_v : natural := 0;
    begin
@@ -56,7 +55,7 @@ ARCHITECTURE behavioral OF ALU IS
 
    function sign_extend_byte(vec : std_logic_vector) return std_logic_vector is
       variable result_v : std_logic_vector(vec'range);
-      variable sign_v   : std_logic := '0';
+      variable sign_v : std_logic := '0';
    begin
       result_v := (others => '0');
       sign_v := vec(7);
@@ -69,7 +68,7 @@ ARCHITECTURE behavioral OF ALU IS
 
    function sign_extend_halfword(vec : std_logic_vector) return std_logic_vector is
       variable result_v : std_logic_vector(vec'range);
-      variable sign_v   : std_logic := '0';
+      variable sign_v : std_logic := '0';
    begin
       result_v := (others => '0');
       sign_v := vec(15);
@@ -210,9 +209,17 @@ ARCHITECTURE behavioral OF ALU IS
       end if;
    end function;
 
-   signal add_res, sub_res, or_res, orn_res, and_res, andn_res, xor_res, xnor_res, sll_res, srl_res, sra_res, eq_res, lts_res, ltu_res, clz_res, ctz_res, cpop_res, rol_res, ror_res, signextb_res, signexth_res, mul_res, mulhs_res, mulhsu_res, mulhu_res, divs_res, divu_res, rems_res, remu_res, res_s :
-      STD_LOGIC_VECTOR(WIDTH-1 DOWNTO 0);
-BEGIN
+   signal add_res, sub_res, or_res, orn_res : std_logic_vector(WIDTH-1 downto 0);
+   signal and_res, andn_res, xor_res, xnor_res : std_logic_vector(WIDTH-1 downto 0);
+   signal sll_res, srl_res, sra_res : std_logic_vector(WIDTH-1 downto 0);
+   signal eq_res, lts_res, ltu_res : std_logic_vector(WIDTH-1 downto 0);
+   signal clz_res, ctz_res, cpop_res : std_logic_vector(WIDTH-1 downto 0);
+   signal rol_res, ror_res : std_logic_vector(WIDTH-1 downto 0);
+   signal signextb_res, signexth_res : std_logic_vector(WIDTH-1 downto 0);
+   signal mul_res, mulhs_res, mulhsu_res, mulhu_res : std_logic_vector(WIDTH-1 downto 0);
+   signal divs_res, divu_res, rems_res, remu_res : std_logic_vector(WIDTH-1 downto 0);
+   signal res_s : std_logic_vector(WIDTH-1 downto 0);
+begin
 
    -- sabiranje
    add_res <= std_logic_vector(unsigned(a_i) + unsigned(b_i));
@@ -253,7 +260,7 @@ BEGIN
    -- sign extension iz manjeg dela registra
    signextb_res <= sign_extend_byte(a_i);
    signexth_res <= sign_extend_halfword(a_i);
-   -- M prosirenje
+   -- m prosirenje
    mul_res <= multiply_lower(a_i, b_i);
    mulhs_res <= multiply_high_signed(a_i, b_i);
    mulhsu_res <= multiply_high_signed_unsigned(a_i, b_i);
@@ -266,28 +273,28 @@ BEGIN
    -- izbor rezultata
    res_o <= res_s;
    with op_i select
-      res_s <= and_res  when and_op,
-               or_res   when or_op,
-               xor_res  when xor_op,
-               add_res  when add_op,
-               sub_res  when sub_op,
-               eq_res   when eq_op,
-               lts_res  when lts_op,
-               ltu_res  when ltu_op,
-               sll_res  when sll_op,
-               srl_res  when srl_op,
-               sra_res  when sra_op,
+      res_s <= and_res when and_op,
+               or_res when or_op,
+               xor_res when xor_op,
+               add_res when add_op,
+               sub_res when sub_op,
+               eq_res when eq_op,
+               lts_res when lts_op,
+               ltu_res when ltu_op,
+               sll_res when sll_op,
+               srl_res when srl_op,
+               sra_res when sra_op,
                andn_res when andn_op,
-               orn_res  when orn_op,
+               orn_res when orn_op,
                xnor_res when xnor_op,
-               clz_res  when clz_op,
-               ctz_res  when ctz_op,
+               clz_res when clz_op,
+               ctz_res when ctz_op,
                cpop_res when cpop_op,
-               rol_res  when rol_op,
-               ror_res  when ror_op,
+               rol_res when rol_op,
+               ror_res when ror_op,
                signextb_res when signextb_op,
                signexth_res when signexth_op,
-               mul_res  when mulu_op,
+               mul_res when mulu_op,
                mulhs_res when mulhs_op,
                mulhsu_res when mulhsu_op,
                mulhu_res when mulhu_op,
@@ -297,13 +304,13 @@ BEGIN
                remu_res when remu_op,
                (others => '1') when others;
 
-   -- Postavlja zero_o na 1 ukoliko je rezultat operacije 0
+   -- postavlja zero_o na 1 ukoliko je rezultat operacije 0
    zero_o <= '1' when res_s = std_logic_vector(to_unsigned(0, WIDTH)) else
              '0';
 
-   -- Prekoracenje se desava kada ulazi imaju isti znak, a izlaz razlicit.
+   -- prekoracenje se desava kada ulazi imaju isti znak, a izlaz razlicit.
    of_o <= '1' when ((op_i = add_op and (a_i(WIDTH-1) = b_i(WIDTH-1)) and ((a_i(WIDTH-1) xor res_s(WIDTH-1)) = '1')) or
                      (op_i = sub_op and (a_i(WIDTH-1) /= b_i(WIDTH-1)) and ((a_i(WIDTH-1) xor res_s(WIDTH-1)) = '1'))) else
            '0';
 
-END behavioral;
+end behavioral;
