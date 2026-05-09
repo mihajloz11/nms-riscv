@@ -84,6 +84,7 @@ Osnovna ideja projekta:
 
 Najvazniji fajlovi:
 - `mapa_projekta.md` - pregled strukture projekta, poredjenje sa vjezbom 2 i opis dodatih instrukcija
+- `scripts/run_ghdl_tests.ps1` - PowerShell provjera za ovaj Windows racunar
 - `rv32i/kontrola/alu_decoder.vhd` - dekodiranje novih instrukcija
 - `rv32i/kontrola/kontrola.vhd` - osnovna kontrola grananja, skokova i upisa u memoriju
 - `rv32i/kontrola/ctrl_decoder.vhd` - osnovni kontrolni signali
@@ -99,6 +100,11 @@ Kako otvoriti projekat u Vivado:
 - otvori `rv32i/vivado_projekat/vivado_projekat.xpr`
 - pokreni `Run Behavioral Simulation`
 - podrazumevani scenario je Zbb demo
+
+Kako provjeriti iz PowerShell-a na ovom racunaru:
+- iz root foldera projekta pokreni `powershell -ExecutionPolicy Bypass -File .\scripts\run_ghdl_tests.ps1 -Scenario all`
+- skripta pokrece ALU test, Zbb CPU demo, prosireni CPU demo i RV32I regresiju
+- privremeni GHDL fajlovi idu u `tmp/ghdl`, koji se ne salje na GitHub
 
 Sta je provereno:
 - GHDL simulacija za nove instrukcije

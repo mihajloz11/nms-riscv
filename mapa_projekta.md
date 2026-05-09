@@ -30,6 +30,8 @@ nms-riscv/
 |-- README.md
 |-- RISCV.tcl
 |-- mapa_projekta.md
+|-- scripts/
+|   `-- run_ghdl_tests.ps1
 |-- rv32i/
 |   |-- TOP_RISCV.vhd
 |   |-- kontrola/
@@ -59,6 +61,10 @@ nms-riscv/
 ```
 
 ## glavni fajlovi
+
+`scripts/run_ghdl_tests.ps1`
+
+PowerShell skripta za provjeru na ovom Windows racunaru. Kompajlira VHDL fajlove pomocu GHDL-a i pokrece ALU test, Zbb demo, prosireni demo i RV32I regresiju.
 
 `rv32i/TOP_RISCV.vhd`
 

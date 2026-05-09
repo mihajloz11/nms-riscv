@@ -13,7 +13,11 @@ set projectDir .\/rv32i/vivado_projekat
 
 file mkdir $projectDir
 
-set localBoardRepo "C:/Users/mihaj/Downloads/vivado-boards-master/vivado-boards-master/new/board_files"
+if {[info exists ::env(USERPROFILE)]} {
+    set localBoardRepo [file normalize [file join $::env(USERPROFILE) Downloads vivado-boards-master vivado-boards-master new board_files]]
+} else {
+    set localBoardRepo ""
+}
 
 set zyboBoardPart ""
 foreach candidate {digilentinc.com:zybo:part0:2.0 digilentinc.com:zybo-z7-10:part0:1.2 digilentinc.com:zybo-z7-10:part0:1.0} {
@@ -57,7 +61,7 @@ add_files -fileset sim_1 -norecurse ./rv32i/testovi/TOP_testovi.vhd
 
 set_property top TOP_testovi [get_filesets sim_1]
 set_property top_lib xil_defaultlib [get_filesets sim_1]
-set_property generic {SCENARIO_ID_G=1} [get_filesets sim_1]
+set_property generic {SCENARIO_ID_G=1 PROGRAM_PATH_G=../../../../../testovi/test_programi/zbb_demo.txt} [get_filesets sim_1]
 set_property runtime 12000ns [get_filesets sim_1]
 set_property xsim.simulate.runtime 12000ns [get_filesets sim_1]
 

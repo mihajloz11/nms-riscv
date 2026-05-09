@@ -4,7 +4,7 @@
 <!-- Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.                   -->
 <!-- Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.   -->
 
-<Project Product="Vivado" Version="7" Minor="71" Path="C:/Users/mihajlo.zivkovic/OneDrive - Ikotek/Documents/Faks/nms-riscv/rv32i/vivado_projekat/vivado_projekat.xpr">
+<Project Product="Vivado" Version="7" Minor="71" Path="C:/Users/mihaj/Desktop/faks/master/Napredni mikroprocesorski sistemi/NMS/projekat/RISCV_VHDL_Zbb/rv32i/vivado_projekat/vivado_projekat.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
     <Option Name="Id" Val="b2591f145d694fb8941880b34494236e"/>
@@ -208,7 +208,8 @@
         <Option Name="LogicalNoCTopLib" Val=""/>
         <Option Name="Dmv" Val=""/>
         <Option Name="xsim.simulate.runtime" Val="12000ns"/>
-        <Generic Name="SCENARIO_ID_G" Val="2"/>
+        <Generic Name="SCENARIO_ID_G" Val="1"/>
+        <Generic Name="PROGRAM_PATH_G" Val="../../../../../testovi/test_programi/zbb_demo.txt"/>
       </Config>
     </FileSet>
     <FileSet Name="utils_1" Type="Utils" RelSrcDir="$PSRCDIR/utils_1" RelGenDir="$PGENDIR/utils_1">
