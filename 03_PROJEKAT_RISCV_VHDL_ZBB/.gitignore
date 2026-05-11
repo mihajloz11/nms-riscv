@@ -1,0 +1,13 @@
+.Xil/
+tmp/
+dfx_runtime.txt
+vivado*.jou
+vivado*.log
+vivado*.str
+vivado_*.backup.jou
+vivado_*.backup.log
+!output/vivado_latest.log
+!output/ghdl_latest.log
+
+rv32i/vivado_projekat/*
+!rv32i/vivado_projekat/

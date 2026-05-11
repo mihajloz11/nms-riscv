@@ -24,7 +24,7 @@ U Vivadu pokrenuti:
 Tools -> Run Tcl Script... -> RISCV.tcl
 ```
 
-Skripta nema lokalne `C:/Users/...` putanje. Sama nalazi folder projekta, doda sve VHDL fajlove i napravi `rv32i/vivado_projekat/vivado_projekat.xpr`.
+Skripta nema lokalne Windows putanje. Sama nalazi folder projekta, doda sve VHDL fajlove i napravi `rv32i/vivado_projekat/vivado_projekat.xpr`.
 
 Nakon toga se simulacija moze pokrenuti normalno kroz GUI:
 

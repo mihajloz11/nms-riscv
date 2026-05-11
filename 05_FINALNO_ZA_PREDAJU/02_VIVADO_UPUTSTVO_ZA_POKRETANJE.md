@@ -23,7 +23,7 @@ Skripta sama pravi projekat:
 rv32i/vivado_projekat/vivado_projekat.xpr
 ```
 
-Skripta ne koristi lokalne `C:/Users/...` putanje. Sve putanje racuna relativno
+Skripta ne koristi lokalne Windows putanje. Sve putanje racuna relativno
 od mjesta gdje se nalazi `RISCV.tcl`.
 
 ## 2. Pokretanje simulacije kroz GUI

@@ -1,0 +1,83 @@
+-- ==================================================
+-- ucenje verzija: control_path_komentarisano.vhd
+-- uloga fajla: glavni kontrolni blok procesora
+-- sustina: spaja ctrl_decoder i alu_decoder i pravi gotove kontrolne signale.
+-- prakticno: ovdje se vidi kako instrukcija upravlja datapath-om.
+-- ==================================================
+
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+entity control_path is
+   port (clk                : in  std_logic;
+         reset              : in  std_logic;
+         -- ********* Interfejs za prihvat instrukcije iz datapath-a*********
+         instruction_i      : in  std_logic_vector (31 downto 0);
+         -- ********* Kontrolni intefejs ************************************* 
+         mem_to_reg_o       : out std_logic;
+         alu_op_o           : out std_logic_vector(4 downto 0);
+         pc_next_sel_o      : out  std_logic;         
+         alu_src_o          : out std_logic;
+         rd_we_o            : out std_logic;         
+         --********** Ulazni Statusni interfejs **************************************
+         branch_condition_i : in  std_logic;
+         --********** Izlazni Statusni interfejs **************************************
+         data_mem_we_o      : out std_logic_vector(3 downto 0)
+         );
+end entity;
+
+
+architecture behavioral of control_path is
+   signal alu_2bit_op_s : std_logic_vector(1 downto 0);
+   signal data_mem_we_s : std_logic;
+   signal branch_s: std_logic;
+begin
+
+   -- Branch se desava samo ako je instrukcija branch
+   -- i ako je uslov grananja iz datapath-a ispunjen.
+   process (branch_condition_i, branch_s)is
+   begin
+      pc_next_sel_o <= '0';
+      if (branch_s = '1' and branch_condition_i = '1')then
+         pc_next_sel_o <= '1';
+      end if;
+   end process;
+                    
+   ctrl_dec : entity work.ctrl_decoder(behavioral)
+      port map(
+         opcode_i      => instruction_i(6 downto 0),
+         branch_o      => branch_s,
+         mem_to_reg_o  => mem_to_reg_o,
+         data_mem_we_o => data_mem_we_s,
+         alu_src_o     => alu_src_o,
+         rd_we_o       => rd_we_o,
+         alu_2bit_op_o => alu_2bit_op_s);
+
+   alu_dec : entity work.alu_decoder(behavioral)
+      port map(
+         alu_2bit_op_i => alu_2bit_op_s,
+         funct3_i      => instruction_i(14 downto 12),
+         funct7_i      => instruction_i(31 downto 25),
+         funct12_i     => instruction_i(31 downto 20),
+         alu_op_o      => alu_op_o);
+
+   -- Za sw se upisuju sva 4 bajta, a za sb samo najnizi bajt.
+   -- Ovo je bitno za ispravan rad store byte instrukcije.
+   process (data_mem_we_s, instruction_i) is
+   begin
+      data_mem_we_o <= (others => '0');
+      if (data_mem_we_s = '1') then
+         case instruction_i(14 downto 12) is
+            when "000" =>
+               data_mem_we_o <= "0001";
+            when "010" =>
+               data_mem_we_o <= "1111";
+            when others =>
+               data_mem_we_o <= (others => '0');
+         end case;
+      end if;
+   end process;
+
+
+end architecture;

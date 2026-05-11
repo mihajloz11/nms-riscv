@@ -1,13 +1,25 @@
-.Xil/
-tmp/
-dfx_runtime.txt
-vivado*.jou
-vivado*.log
-vivado*.str
-vivado_*.backup.jou
-vivado_*.backup.log
-!output/vivado_latest.log
-!output/ghdl_latest.log
+# Windows / Word temporary files
+~$*.docx
+Thumbs.db
+Desktop.ini
 
-rv32i/vivado_projekat/*
-!rv32i/vivado_projekat/
+# Vivado generated files
+**/.Xil/
+**/tmp/
+**/*.jou
+**/*.str
+**/*.wdb
+**/*.vcd
+**/*.ghw
+**/*_webtalk.*
+**/vivado*.log
+**/vivado_*.backup.*
+
+# Generated Vivado project outputs
+**/vivado_projekat/*
+!**/vivado_projekat/
+
+# Keep curated proof logs under output/final folders
+!**/output/vivado_latest.log
+!**/output/ghdl_latest.log
+!05_FINALNO_ZA_PREDAJU/*.log

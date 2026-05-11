@@ -1,0 +1,44 @@
+SINGLE-CYCLE RISC-V SA ZBB PROSIRENJEM
+======================================
+
+                     +-------------------+
+                     | instruction memory|
+                     +-------------------+
+                               |
+                               v
+                        instruction_s
+                               |
+                +-------------------------------+
+                |          control_path         |
+                | ctrl_decoder + alu_decoder    |
+                +-------------------------------+
+                     |       |         |
+                     |       |         +--> pc_next_sel
+                     |       +------------> alu_op
+                     +--------------------> mem_to_reg / alu_src / rd_we / data_mem_we
+
+                               instruction_s
+                                    |
+                                    v
+                +-----------------------------------------------+
+                |                  data_path                    |
+                | register_bank + immediate + ALU + PC logika   |
+                +-----------------------------------------------+
+                     |               |                |
+                     |               |                +--> branch_condition
+                     |               +-------------------> alu_result_s
+                     +-----------------------------------> rd_data_s
+
+                                    |
+                                    v
+                          +-------------------+
+                          |    data memory     |
+                          +-------------------+
+                                    |
+                                    v
+                               load_data_s
+
+Zbb dio projekta je prakticno dodat na tri mjesta:
+- u `alu_ops_pkg` su dodati novi interni ALU kodovi
+- u `alu_decoder` su dodata pravila kako se nove instrukcije prepoznaju
+- u `ALU_simple` je dodata logika koja te operacije stvarno racuna

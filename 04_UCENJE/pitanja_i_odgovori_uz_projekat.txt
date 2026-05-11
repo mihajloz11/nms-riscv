@@ -1,0 +1,52 @@
+PITANJE 1:
+Gdje se vidi osnovna struktura procesora?
+
+ODGOVOR:
+Najbitniji fajl je:
+- `vhdl_komentarisano/dizajn/TOP_RISCV_komentarisano.vhd`
+
+Tu se vidi da procesor ima dva glavna bloka:
+- `data_path`
+- `control_path`
+
+
+PITANJE 2:
+Gdje se vidi kako se instrukcija dekodira?
+
+ODGOVOR:
+Najbitniji fajlovi su:
+- `ctrl_decoder_komentarisano.vhd`
+- `alu_decoder_komentarisano.vhd`
+
+`ctrl_decoder` prepoznaje siroku klasu instrukcije, a `alu_decoder`
+od detalja instrukcije pravi konkretnu ALU operaciju.
+
+
+PITANJE 3:
+Gdje se vidi kako su dodate nove Zbb instrukcije?
+
+ODGOVOR:
+Najbitniji fajlovi su:
+- `alu_ops_pkg_komentarisano.vhd`
+- `alu_decoder_komentarisano.vhd`
+- `ALU_simple_komentarisano.vhd`
+
+
+PITANJE 4:
+Gdje se vidi kako instrukcija prolazi kroz procesor?
+
+ODGOVOR:
+Najbitniji fajl je:
+- `data_path_komentarisano.vhd`
+
+Tu se vidi PC, registri, immediate, ALU i write-back put.
+
+
+PITANJE 5:
+Gdje se vidi verifikacija?
+
+ODGOVOR:
+U:
+- `TOP_RISCV_tb_komentarisano.vhd`
+
+Tu se vidi kako testbench puni memoriju i kako provjerava store rezultate.

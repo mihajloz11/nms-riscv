@@ -1,0 +1,40 @@
+OBJASNJENJE DEMO PROGRAMA
+=========================
+
+1) ZBB DEMO
+-----------
+
+Fajl:
+- `zbb_demo_komentarisano.txt`
+
+Rezultati koje testbench ocekuje:
+- 0x20 -> andn  -> FF000000
+- 0x24 -> cpop  -> 00000010
+- 0x28 -> clz   -> 00000010
+- 0x2C -> ctz   -> 00000004
+- 0x30 -> orn   -> FFFFFF00
+- 0x34 -> xnor  -> 00FFFF00
+- 0x38 -> rol   -> 0FF00FF0
+- 0x3C -> ror   -> F00FF00F
+- 0x40 -> sext.b -> FFFFFFFF
+- 0x44 -> sext.h -> FFFFF000
+
+2) EXTENDED DEMO
+----------------
+
+Fajl:
+- `extended_demo_komentarisano.txt`
+
+Ovaj program sluzi da pokaze da jezgro podrzava i dodatne RV32I instrukcije:
+- xor
+- xori
+- slli
+- bne
+- blt
+- bge
+- lb
+- lbu
+- sb
+- fence
+- ecall
+- ebreak

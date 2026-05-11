@@ -1,0 +1,23 @@
+Vivado dokaz provjere - ociscen log bez lokalnih putanja
+Datum provjere: 2026-05-09
+Alat: Vivado v2025.2 (64-bit)
+Ciljna komponenta: xc7z010clg400-1
+
+Pokrenute provjere:
+- sinteza top modula TOP_RISCV
+- behavioral simulacija ALU_zbb_tb
+- behavioral simulacija TOP_testovi, Zbb scenario
+- behavioral simulacija TOP_testovi, RV32I regresija
+- behavioral simulacija TOP_testovi, prosireni scenario
+
+Rezultat:
+SYNTH_STATUS=synth_design Complete!
+Note: ALU extended tests passed
+Note: Zbb CPU demo test passed
+Note: rv32i regression CPU test passed
+Note: Extended CPU demo test passed
+Vivado checks completed successfully.
+
+Napomena:
+Originalni puni Vivado log je sadrzao lokalne Windows putanje i zato nije ostavljen za slanje.
+Za ponovno pravljenje Vivado projekta koristi se prenosiva skripta RISCV.tcl.

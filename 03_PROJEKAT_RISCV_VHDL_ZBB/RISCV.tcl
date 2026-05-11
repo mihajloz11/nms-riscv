@@ -4,7 +4,7 @@
 #
 # Skripta sama nalazi folder u kojem se nalazi, napravi Vivado projekat
 # u rv32i/vivado_projekat i doda sve VHDL fajlove. Ne koristi lokalne
-# C:/Users/... putanje.
+# lokalne Windows putanje.
 
 set script_dir [file normalize [file dirname [info script]]]
 set project_name "vivado_projekat"
