@@ -3,8 +3,8 @@ OUTPUT - STA KORISTITI
 KORISTI:
 projektna_dokumentacija_rv32im_zbb.docx
 vivado_uputstvo_za_pokretanje_2026-05-09.md
-vivado_all_2026-05-09.log
-ghdl_all_2026-05-09.log
+vivado_latest.log
+ghdl_latest.log
 
 NE SLATI:
 Render slike, privremene kopije i stare verzije Word fajlova nisu dio finalnog Git commita.

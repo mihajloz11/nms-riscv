@@ -1,0 +1,168 @@
+﻿GHDL provjera - scenario: all
+Radni folder: root projekta
+
+
+ghdl -a --std=08 --workdir=.\tmp\ghdl .\rv32i\paketi\txt_util.vhd
+
+ghdl -a --std=08 --workdir=.\tmp\ghdl .\rv32i\paketi\alu_ops_pkg.vhd
+
+ghdl -a --std=08 --workdir=.\tmp\ghdl .\rv32i\podaci\ALU_simple.vhd
+
+ghdl -a --std=08 --workdir=.\tmp\ghdl .\rv32i\podaci\register_bank.vhd
+
+ghdl -a --std=08 --workdir=.\tmp\ghdl .\rv32i\podaci\immediate.vhd
+
+ghdl -a --std=08 --workdir=.\tmp\ghdl .\rv32i\podaci\podaci.vhd
+
+ghdl -a --std=08 --workdir=.\tmp\ghdl .\rv32i\kontrola\ctrl_decoder.vhd
+
+ghdl -a --std=08 --workdir=.\tmp\ghdl .\rv32i\kontrola\alu_decoder.vhd
+
+ghdl -a --std=08 --workdir=.\tmp\ghdl .\rv32i\kontrola\kontrola.vhd
+
+ghdl -a --std=08 --workdir=.\tmp\ghdl .\rv32i\TOP_RISCV.vhd
+
+ghdl -a --std=08 --workdir=.\tmp\ghdl .\rv32i\testovi\BRAM_byte_addressable.vhd
+
+ghdl -a --std=08 --workdir=.\tmp\ghdl .\rv32i\testovi\ALU_zbb_tb.vhd
+
+ghdl -a --std=08 --workdir=.\tmp\ghdl .\rv32i\testovi\TOP_testovi.vhd
+
+ghdl -e --std=08 --workdir=.\tmp\ghdl ALU_zbb_tb
+
+ghdl -r --std=08 --workdir=.\tmp\ghdl ALU_zbb_tb
+.\rv32i\testovi\ALU_zbb_tb.vhd:85:7:@35ns:(report note): ALU extended tests passed
+simulation finished @35ns
+
+ghdl -e --std=08 --workdir=.\tmp\ghdl TOP_testovi
+
+ghdl -r --std=08 --workdir=.\tmp\ghdl TOP_testovi -gSCENARIO_ID_G=1 -gPROGRAM_PATH_G=rv32i/testovi/test_programi/zbb_demo.txt --stop-time=80us
+../../src/ieee2008/numeric_std-body.vhdl:1364:7:@0ms:(assertion warning): NUMERIC_STD."<": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1337:7:@0ms:(assertion warning): NUMERIC_STD."<": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1890:7:@0ms:(assertion warning): NUMERIC_STD."=": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1890:7:@0ms:(assertion warning): NUMERIC_STD."=": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1890:7:@0ms:(assertion warning): NUMERIC_STD."=": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1890:7:@0ms:(assertion warning): NUMERIC_STD."=": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1890:7:@0ms:(assertion warning): NUMERIC_STD."=": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1890:7:@0ms:(assertion warning): NUMERIC_STD."=": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1890:7:@0ms:(assertion warning): NUMERIC_STD."=": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1890:7:@0ms:(assertion warning): NUMERIC_STD."=": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1337:7:@0ms:(assertion warning): NUMERIC_STD."<": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1364:7:@0ms:(assertion warning): NUMERIC_STD."<": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1890:7:@6200ns:(assertion warning): NUMERIC_STD."=": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1890:7:@6200ns:(assertion warning): NUMERIC_STD."=": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1890:7:@6200ns:(assertion warning): NUMERIC_STD."=": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1890:7:@6200ns:(assertion warning): NUMERIC_STD."=": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1337:7:@6200ns:(assertion warning): NUMERIC_STD."<": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1364:7:@6200ns:(assertion warning): NUMERIC_STD."<": metavalue detected, returning FALSE
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@8200ns:(report note): CPU store observed: addr=0x00000020 data=0xFF000000
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@8400ns:(report note): CPU store observed: addr=0x00000024 data=0x00000010
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@8600ns:(report note): CPU store observed: addr=0x00000028 data=0x00000010
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@8800ns:(report note): CPU store observed: addr=0x0000002C data=0x00000004
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@9800ns:(report note): CPU store observed: addr=0x00000030 data=0xFFFFFF00
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@10us:(report note): CPU store observed: addr=0x00000034 data=0x00FFFF00
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@10200ns:(report note): CPU store observed: addr=0x00000038 data=0x0FF00FF0
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@10400ns:(report note): CPU store observed: addr=0x0000003C data=0xF00FF00F
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@11us:(report note): CPU store observed: addr=0x00000040 data=0xFFFFFFFF
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@11200ns:(report note): CPU store observed: addr=0x00000044 data=0xFFFFF000
+.\rv32i\testovi\TOP_testovi.vhd:353:22:@11200ns:(report note): Zbb CPU demo test passed
+simulation finished @11200ns
+
+ghdl -r --std=08 --workdir=.\tmp\ghdl TOP_testovi -gSCENARIO_ID_G=2 -gPROGRAM_PATH_G=rv32i/testovi/test_programi/extended_demo.txt --stop-time=80us
+../../src/ieee2008/numeric_std-body.vhdl:1364:7:@0ms:(assertion warning): NUMERIC_STD."<": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1337:7:@0ms:(assertion warning): NUMERIC_STD."<": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1890:7:@0ms:(assertion warning): NUMERIC_STD."=": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1890:7:@0ms:(assertion warning): NUMERIC_STD."=": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1890:7:@0ms:(assertion warning): NUMERIC_STD."=": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1890:7:@0ms:(assertion warning): NUMERIC_STD."=": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1890:7:@0ms:(assertion warning): NUMERIC_STD."=": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1890:7:@0ms:(assertion warning): NUMERIC_STD."=": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1890:7:@0ms:(assertion warning): NUMERIC_STD."=": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1890:7:@0ms:(assertion warning): NUMERIC_STD."=": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1337:7:@0ms:(assertion warning): NUMERIC_STD."<": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1364:7:@0ms:(assertion warning): NUMERIC_STD."<": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1890:7:@26200ns:(assertion warning): NUMERIC_STD."=": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1890:7:@26200ns:(assertion warning): NUMERIC_STD."=": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1890:7:@26200ns:(assertion warning): NUMERIC_STD."=": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1890:7:@26200ns:(assertion warning): NUMERIC_STD."=": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1337:7:@26200ns:(assertion warning): NUMERIC_STD."<": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1364:7:@26200ns:(assertion warning): NUMERIC_STD."<": metavalue detected, returning FALSE
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@27400ns:(report note): CPU store observed: addr=0x00000050 data=0xFF0000FF
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@27800ns:(report note): CPU store observed: addr=0x00000054 data=0x0000001F
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@28200ns:(report note): CPU store observed: addr=0x00000058 data=0x00000080
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@28800ns:(report note): CPU store observed: addr=0x0000005C data=0x00000001
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@29400ns:(report note): CPU store observed: addr=0x00000060 data=0x00000002
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@30us:(report note): CPU store observed: addr=0x00000064 data=0x00000003
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@30400ns:(report note): CPU store observed: addr=0x00000068 data=0xFFFFFF80
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@30800ns:(report note): CPU store observed: addr=0x0000006C data=0x00000080
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@31us:(report note): CPU store observed: addr=0x00000018 data=0x00000010
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@31400ns:(report note): CPU store observed: addr=0x00000070 data=0x00000010
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@32us:(report note): CPU store observed: addr=0x00000074 data=0x00000004
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@32600ns:(report note): CPU store observed: addr=0x00000078 data=0x00000005
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@33200ns:(report note): CPU store observed: addr=0x0000007C data=0x00000006
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@33600ns:(report note): CPU store observed: addr=0x00000080 data=0x12345000
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@34us:(report note): CPU store observed: addr=0x00000084 data=0x000000A0
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@34600ns:(report note): CPU store observed: addr=0x00000088 data=0x00000001
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@35us:(report note): CPU store observed: addr=0x0000008C data=0x00000000
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@35400ns:(report note): CPU store observed: addr=0x00000090 data=0x00000001
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@35800ns:(report note): CPU store observed: addr=0x00000094 data=0x00000000
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@36200ns:(report note): CPU store observed: addr=0x00000098 data=0x0FFFFFFF
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@36600ns:(report note): CPU store observed: addr=0x0000009C data=0xFFFFFFFF
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@37200ns:(report note): CPU store observed: addr=0x000000A0 data=0x7FFFFFFF
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@37600ns:(report note): CPU store observed: addr=0x000000A4 data=0xFFFFFFFF
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@38200ns:(report note): CPU store observed: addr=0x000000A8 data=0x000000A0
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@38600ns:(report note): CPU store observed: addr=0x000000AC data=0xFFFFFF80
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@39us:(report note): CPU store observed: addr=0x000000B0 data=0x0000FF80
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@39200ns:(report note): CPU store observed: addr=0x0000001C data=0x0000FF80
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@39800ns:(report note): CPU store observed: addr=0x000000B4 data=0x0000FF80
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@40400ns:(report note): CPU store observed: addr=0x000000B8 data=0x00000005
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@41us:(report note): CPU store observed: addr=0x000000BC data=0x00000007
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@41400ns:(report note): CPU store observed: addr=0x000000C0 data=0x0000013C
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@42us:(report note): CPU store observed: addr=0x000000C4 data=0x0000014C
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@42800ns:(report note): CPU store observed: addr=0x000000C8 data=0xFFFFFFBF
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@43200ns:(report note): CPU store observed: addr=0x000000CC data=0xFFFFFFFF
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@43600ns:(report note): CPU store observed: addr=0x000000D0 data=0x00000004
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@44us:(report note): CPU store observed: addr=0x000000D4 data=0xFFFFFFFF
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@44400ns:(report note): CPU store observed: addr=0x000000D8 data=0xFFFFFFFE
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@44800ns:(report note): CPU store observed: addr=0x000000DC data=0x33333330
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@45200ns:(report note): CPU store observed: addr=0x000000E0 data=0xFFFFFFFD
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@45600ns:(report note): CPU store observed: addr=0x000000E4 data=0x00000003
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@46200ns:(report note): CPU store observed: addr=0x000000E8 data=0xFFFFFFFF
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@46600ns:(report note): CPU store observed: addr=0x000000EC data=0xFFFFFFF3
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@47400ns:(report note): CPU store observed: addr=0x000000F0 data=0x80000000
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@47800ns:(report note): CPU store observed: addr=0x000000F4 data=0x00000000
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@50200ns:(report note): CPU store observed: addr=0x000000F8 data=0x00000003
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@50600ns:(report note): CPU store observed: addr=0x00000100 data=0x000001E4
+.\rv32i\testovi\TOP_testovi.vhd:338:22:@50600ns:(report note): Extended CPU demo test passed
+simulation finished @50600ns
+
+ghdl -r --std=08 --workdir=.\tmp\ghdl TOP_testovi -gSCENARIO_ID_G=0 -gPROGRAM_PATH_G=rv32i/testovi/test_programi/rv32i_regression.txt --stop-time=80us
+../../src/ieee2008/numeric_std-body.vhdl:1364:7:@0ms:(assertion warning): NUMERIC_STD."<": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1337:7:@0ms:(assertion warning): NUMERIC_STD."<": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1890:7:@0ms:(assertion warning): NUMERIC_STD."=": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1890:7:@0ms:(assertion warning): NUMERIC_STD."=": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1890:7:@0ms:(assertion warning): NUMERIC_STD."=": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1890:7:@0ms:(assertion warning): NUMERIC_STD."=": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1890:7:@0ms:(assertion warning): NUMERIC_STD."=": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1890:7:@0ms:(assertion warning): NUMERIC_STD."=": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1890:7:@0ms:(assertion warning): NUMERIC_STD."=": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1890:7:@0ms:(assertion warning): NUMERIC_STD."=": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1337:7:@0ms:(assertion warning): NUMERIC_STD."<": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1364:7:@0ms:(assertion warning): NUMERIC_STD."<": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1890:7:@3800ns:(assertion warning): NUMERIC_STD."=": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1890:7:@3800ns:(assertion warning): NUMERIC_STD."=": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1890:7:@3800ns:(assertion warning): NUMERIC_STD."=": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1890:7:@3800ns:(assertion warning): NUMERIC_STD."=": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1337:7:@3800ns:(assertion warning): NUMERIC_STD."<": metavalue detected, returning FALSE
+../../src/ieee2008/numeric_std-body.vhdl:1364:7:@3800ns:(assertion warning): NUMERIC_STD."<": metavalue detected, returning FALSE
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@4600ns:(report note): CPU store observed: addr=0x00000020 data=0x0000000C
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@5us:(report note): CPU store observed: addr=0x00000024 data=0x00000002
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@5400ns:(report note): CPU store observed: addr=0x00000028 data=0x00000005
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@5800ns:(report note): CPU store observed: addr=0x0000002C data=0x00000007
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@6200ns:(report note): CPU store observed: addr=0x00000030 data=0x00000008
+.\rv32i\testovi\TOP_testovi.vhd:307:13:@6800ns:(report note): CPU store observed: addr=0x00000034 data=0x0000004D
+.\rv32i\testovi\TOP_testovi.vhd:323:22:@6800ns:(report note): rv32i regression CPU test passed
+simulation finished @6800ns
+
+Svi trazeni GHDL testovi su prosli.
+Log je sacuvan u: output/ghdl_latest.log

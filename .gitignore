@@ -6,7 +6,8 @@ vivado*.log
 vivado*.str
 vivado_*.backup.jou
 vivado_*.backup.log
+!output/vivado_latest.log
+!output/ghdl_latest.log
 
 rv32i/vivado_projekat/*
 !rv32i/vivado_projekat/
-!rv32i/vivado_projekat/vivado_projekat.xpr

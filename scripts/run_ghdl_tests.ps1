@@ -9,19 +9,40 @@ Set-StrictMode -Version Latest
 $repoRoot = Split-Path -Parent $PSScriptRoot
 Set-Location -LiteralPath $repoRoot
 
+$outputDir = ".\output"
+$workDir = ".\tmp\ghdl"
+$logPath = ".\output\ghdl_latest.log"
+
+New-Item -ItemType Directory -Force -Path $outputDir | Out-Null
+New-Item -ItemType Directory -Force -Path $workDir | Out-Null
+Get-ChildItem -LiteralPath $workDir -Force -ErrorAction SilentlyContinue | Remove-Item -Force
+
 if (-not (Get-Command ghdl -ErrorAction SilentlyContinue)) {
     throw "GHDL nije nadjen u PATH-u. Instaliraj GHDL ili dodaj ghdl.exe u PATH."
 }
 
-$workDir = ".\tmp\ghdl"
-New-Item -ItemType Directory -Force -Path $workDir | Out-Null
-Get-ChildItem -LiteralPath $workDir -Force -ErrorAction SilentlyContinue | Remove-Item -Force
+"GHDL provjera - scenario: $Scenario" | Set-Content -LiteralPath $logPath -Encoding UTF8
+"Radni folder: root projekta" | Add-Content -LiteralPath $logPath -Encoding UTF8
+"" | Add-Content -LiteralPath $logPath -Encoding UTF8
+
+function Write-LogLine {
+    param([string]$Line)
+    Write-Host $Line
+    Add-Content -LiteralPath $script:logPath -Encoding UTF8 -Value $Line
+}
 
 function Invoke-Ghdl {
-    $ghdlArgs = $args
-    & ghdl @ghdlArgs
+    param([string[]]$GhdlArgs)
+
+    Write-LogLine ""
+    Write-LogLine ("ghdl " + ($GhdlArgs -join " "))
+    & ghdl @GhdlArgs 2>&1 | ForEach-Object {
+        $line = $_.ToString()
+        Write-Host $line
+        Add-Content -LiteralPath $script:logPath -Encoding UTF8 -Value $line
+    }
     if ($LASTEXITCODE -ne 0) {
-        throw "GHDL komanda nije prosla: ghdl $($ghdlArgs -join ' ')"
+        throw "GHDL komanda nije prosla: ghdl $($GhdlArgs -join ' ')"
     }
 }
 
@@ -42,37 +63,45 @@ $sourceFiles = @(
 )
 
 foreach ($file in $sourceFiles) {
-    Invoke-Ghdl -a --std=08 "--workdir=$workDir" $file
+    Invoke-Ghdl -GhdlArgs @("-a", "--std=08", "--workdir=$workDir", $file)
 }
 
 if ($Scenario -eq "all" -or $Scenario -eq "alu") {
-    Invoke-Ghdl -e --std=08 "--workdir=$workDir" ALU_zbb_tb
-    Invoke-Ghdl -r --std=08 "--workdir=$workDir" ALU_zbb_tb
+    Invoke-Ghdl -GhdlArgs @("-e", "--std=08", "--workdir=$workDir", "ALU_zbb_tb")
+    Invoke-Ghdl -GhdlArgs @("-r", "--std=08", "--workdir=$workDir", "ALU_zbb_tb")
 }
 
 if ($Scenario -ne "alu") {
-    Invoke-Ghdl -e --std=08 "--workdir=$workDir" TOP_testovi
+    Invoke-Ghdl -GhdlArgs @("-e", "--std=08", "--workdir=$workDir", "TOP_testovi")
 }
 
 if ($Scenario -eq "all" -or $Scenario -eq "zbb") {
-    Invoke-Ghdl -r --std=08 "--workdir=$workDir" TOP_testovi `
-        -gSCENARIO_ID_G=1 `
-        -gPROGRAM_PATH_G="rv32i/testovi/test_programi/zbb_demo.txt" `
-        --stop-time=80us
+    Invoke-Ghdl -GhdlArgs @(
+        "-r", "--std=08", "--workdir=$workDir", "TOP_testovi",
+        "-gSCENARIO_ID_G=1",
+        "-gPROGRAM_PATH_G=rv32i/testovi/test_programi/zbb_demo.txt",
+        "--stop-time=80us"
+    )
 }
 
 if ($Scenario -eq "all" -or $Scenario -eq "extended") {
-    Invoke-Ghdl -r --std=08 "--workdir=$workDir" TOP_testovi `
-        -gSCENARIO_ID_G=2 `
-        -gPROGRAM_PATH_G="rv32i/testovi/test_programi/extended_demo.txt" `
-        --stop-time=80us
+    Invoke-Ghdl -GhdlArgs @(
+        "-r", "--std=08", "--workdir=$workDir", "TOP_testovi",
+        "-gSCENARIO_ID_G=2",
+        "-gPROGRAM_PATH_G=rv32i/testovi/test_programi/extended_demo.txt",
+        "--stop-time=80us"
+    )
 }
 
 if ($Scenario -eq "all" -or $Scenario -eq "rv32i") {
-    Invoke-Ghdl -r --std=08 "--workdir=$workDir" TOP_testovi `
-        -gSCENARIO_ID_G=0 `
-        -gPROGRAM_PATH_G="rv32i/testovi/test_programi/rv32i_regression.txt" `
-        --stop-time=80us
+    Invoke-Ghdl -GhdlArgs @(
+        "-r", "--std=08", "--workdir=$workDir", "TOP_testovi",
+        "-gSCENARIO_ID_G=0",
+        "-gPROGRAM_PATH_G=rv32i/testovi/test_programi/rv32i_regression.txt",
+        "--stop-time=80us"
+    )
 }
 
-Write-Host "Svi trazeni GHDL testovi su prosli."
+Write-LogLine ""
+Write-LogLine "Svi trazeni GHDL testovi su prosli."
+Write-LogLine "Log je sacuvan u: output/ghdl_latest.log"

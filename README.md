@@ -1,129 +1,61 @@
 # RV32IM single-cycle + Zbb podskup
 
-Ovaj projekat je radjen nad postojecom single-cycle RV32I bazom iz materijala za predmet Napredni mikroprocesorski sistemi.
-Osnovna arhitektura je prosirena manjim podskupom standardnih RISC-V bit-manipulation instrukcija,
-a zatim i dodatnim RV32I instrukcijama koje lepo staju u postojeci single-cycle model.
+Ovo je skolski single-cycle RISC-V projekat prosiren sa dodatnim RV32I instrukcijama, RV32M skupom i manjim Zbb podskupom. Kod je namjerno ostavljen jednostavan i citljiv, da se moze lako proci kroz dekodere, ALU i datapath.
 
-Dodate RV32M instrukcije:
-- `mul`
-- `mulh`
-- `mulhsu`
-- `mulhu`
-- `div`
-- `divu`
-- `rem`
-- `remu`
+## Sta je dodato
 
-Dodate Zbb instrukcije:
-- `andn`
-- `orn`
-- `xnor`
-- `clz`
-- `ctz`
-- `cpop`
-- `rol`
-- `ror`
-- `sign-extend byte (sext.b)`
-- `sign-extend halfword (sext.h)`
+- dodatni RV32I: `lui`, `auipc`, `jal`, `jalr`, svi branch uslovi, load/store varijante, I/R ALU operacije, `fence`, `ecall`, `ebreak`
+- RV32M: `mul`, `mulh`, `mulhsu`, `mulhu`, `div`, `divu`, `rem`, `remu`
+- Zbb podskup: `andn`, `orn`, `xnor`, `clz`, `ctz`, `cpop`, `rol`, `ror`, `sext.b`, `sext.h`
 
-Podrzan RV32I skup:
-- `lui`
-- `auipc`
-- `jal`
-- `jalr`
-- `beq`
-- `bne`
-- `blt`
-- `bge`
-- `bltu`
-- `bgeu`
-- `lb`
-- `lh`
-- `lw`
-- `lbu`
-- `lhu`
-- `sb`
-- `sh`
-- `sw`
-- `addi`
-- `slti`
-- `sltiu`
-- `xori`
-- `ori`
-- `andi`
-- `slli`
-- `srli`
-- `srai`
-- `add`
-- `sub`
-- `sll`
-- `slt`
-- `sltu`
-- `xor`
-- `srl`
-- `sra`
-- `or`
-- `and`
-- `fence`
-- `ecall`
-- `ebreak`
+## Najbitnije u projektu
 
-Ukupno stanje projekta:
-- kompletan osnovni RV32I skup: 40 instrukcija
-- dodat RV32M skup: 8 instrukcija
-- dodat Zbb podskup: 10 instrukcija
-- ukupno dokumentovano u ovom projektu: 58 instrukcija
+- `rv32i/` - VHDL implementacija procesora, kontrola, datapath, paketi i testovi
+- `RISCV.tcl` - prenosiva Vivado GUI skripta koja pravi `rv32i/vivado_projekat/vivado_projekat.xpr`
+- `scripts/run_ghdl_tests.ps1` - jedna GHDL skripta za pokretanje svih testova
+- `output/` - finalni Word report i posljednji dokazni logovi
+- `mapa_projekta.md` - kratak vodic kroz strukturu projekta
 
-Osnovna ideja projekta:
-- polazna baza je single-cycle RV32I procesor
-- prosiren je dekoder instrukcija na isti jednostavan nacin kao u skolskom primeru
-- prosirena je ALU logika bez uvodjenja nepotrebno slozenih blokova
-- M instrukcije su dodate direktno u ALU, kombinaciono, sto je najjednostavnije za skolski single-cycle model
-- provereno je da nove instrukcije rade
-- provereno je da stare RV32I instrukcije nisu pokvarene
+## Vivado GUI
 
-Najvazniji fajlovi:
-- `mapa_projekta.md` - pregled strukture projekta, poredjenje sa vjezbom 2 i opis dodatih instrukcija
-- `scripts/run_ghdl_tests.ps1` - PowerShell provjera za ovaj Windows racunar
-- `rv32i/kontrola/alu_decoder.vhd` - dekodiranje novih instrukcija
-- `rv32i/kontrola/kontrola.vhd` - osnovna kontrola grananja, skokova i upisa u memoriju
-- `rv32i/kontrola/ctrl_decoder.vhd` - osnovni kontrolni signali
-- `rv32i/podaci/ALU_simple.vhd` - implementacija novih ALU operacija
-- `rv32i/podaci/podaci.vhd` - PC mux, load prosirenja i izbor podatka za upis u registar
-- `rv32i/podaci/immediate.vhd` - I/S/B/U/J immediate prosirenje
-- `rv32i/paketi/alu_ops_pkg.vhd` - interni ALU kodovi
-- `rv32i/testovi/ALU_zbb_tb.vhd` - jednostavan ALU testbench
-- `rv32i/testovi/TOP_testovi.vhd` - CPU-level testbench
-- `rv32i/testovi/test_programi/extended_demo.txt` - demo za dodatne RV32I/RV32M instrukcije i skokove
+U Vivadu pokrenuti:
 
-Kako otvoriti projekat u Vivado:
-- otvori `rv32i/vivado_projekat/vivado_projekat.xpr`
-- pokreni `Run Behavioral Simulation`
-- podrazumevani scenario je Zbb demo
+```text
+Tools -> Run Tcl Script... -> RISCV.tcl
+```
 
-Kako provjeriti iz PowerShell-a na ovom racunaru:
-- iz root foldera projekta pokreni `powershell -ExecutionPolicy Bypass -File .\scripts\run_ghdl_tests.ps1 -Scenario all`
-- skripta pokrece ALU test, Zbb CPU demo, prosireni CPU demo i RV32I regresiju
-- privremeni GHDL fajlovi idu u `tmp/ghdl`, koji se ne salje na GitHub
+Skripta nema lokalne `C:/Users/...` putanje. Sama nalazi folder projekta, doda sve VHDL fajlove i napravi `rv32i/vivado_projekat/vivado_projekat.xpr`.
 
-Kako provjeriti kompletno u Vivado batch rezimu:
-- iz root foldera projekta pokreni `powershell -ExecutionPolicy Bypass -File .\scripts\run_vivado_checks.ps1 -Scenario all`
-- skripta regenerise Vivado projekat iz `RISCV.tcl`, pokrece sintezu, ALU behavioral simulaciju, Zbb demo, RV32I regresiju i prosireni CPU demo
-- dokaz prolaza su linije `SYNTH_STATUS=synth_design Complete!`, `ALU extended tests passed`, `Zbb CPU demo test passed`, `rv32i regression CPU test passed`, `Extended CPU demo test passed` i `Vivado checks completed successfully.`
-- detaljno uputstvo za GUI pokretanje i screenshot dokaz je u `output/vivado_uputstvo_za_pokretanje_2026-05-09.md`
+Nakon toga se simulacija moze pokrenuti normalno kroz GUI:
 
-Sta je provereno:
-- GHDL simulacija za nove instrukcije
-- CPU-level simulacija za Zbb demo
-- CPU-level simulacija za prosireni demo sa granama, skokovima, memorijom, RV32M i sistemskim instrukcijama
-- regresiona provera osnovnih RV32I instrukcija
-- Vivado synthesis
+```text
+Flow Navigator -> Simulation -> Run Simulation -> Run Behavioral Simulation
+```
 
-Napomena za Vivado simulaciju:
-- ako je Vivado GUI vec otvoren, XSim ume da zakljuca svoje log fajlove
-- u tom slucaju GHDL simulacija prolazi normalno, a Vivado synthesis takodje prolazi
+Podrazumijevani scenario je Zbb demo.
 
-Napomena:
-- projekat je radjen nad single-cycle bazom, ne nad pipelined varijantom
-- fokus rada je na jasnom prosirenju instruction set-a, bez nepotrebnog komplikovanja arhitekture
-- nisu implementirane sve RISC-V ekstenzije sa sajta; nisu ukljuceni F/D floating-point, A atomici, C compressed, V vector, CSR/privileged sistem
+## GHDL provjera
+
+Iz root foldera projekta:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\run_ghdl_tests.ps1 -Scenario all
+```
+
+Skripta kompajlira VHDL fajlove i pokrece:
+
+- ALU/Zbb test
+- Zbb CPU demo
+- prosireni CPU demo
+- RV32I regresioni test
+
+Dokazni log se cuva u `output/ghdl_latest.log`.
+
+## Dokumentacija i dokazi
+
+- `output/projektna_dokumentacija_rv32im_zbb.docx` - finalni Word report u repou
+- `output/vivado_latest.log` - posljednji Vivado dokaz
+- `output/ghdl_latest.log` - posljednji GHDL dokaz
+- `output/vivado_uputstvo_za_pokretanje_2026-05-09.md` - kratko uputstvo za Vivado provjeru
+
+Generisani Vivado folderi, `.Xil`, `tmp`, waveform/log cache i stari XPR fajlovi nisu dio finalnog projekta za slanje.
