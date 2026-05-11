@@ -1,0 +1,12 @@
+OUTPUT - STA KORISTITI
+
+KORISTI:
+NMS_RISCV_Zbb_REPORT_TESTIRANO_FINAL.docx
+vivado_uputstvo_za_pokretanje_2026-05-09.md
+vivado_all_2026-05-09.log
+ghdl_all_2026-05-09.log
+
+NE SLATI:
+Render slike, stare kopije i fajl koji je pravio problem u Wordu nisu dio Git commita.
+Finalni Word report je samo:
+NMS_RISCV_Zbb_REPORT_TESTIRANO_FINAL.docx

@@ -106,6 +106,12 @@ Kako provjeriti iz PowerShell-a na ovom racunaru:
 - skripta pokrece ALU test, Zbb CPU demo, prosireni CPU demo i RV32I regresiju
 - privremeni GHDL fajlovi idu u `tmp/ghdl`, koji se ne salje na GitHub
 
+Kako provjeriti kompletno u Vivado batch rezimu:
+- iz root foldera projekta pokreni `powershell -ExecutionPolicy Bypass -File .\scripts\run_vivado_checks.ps1 -Scenario all`
+- skripta regenerise Vivado projekat iz `RISCV.tcl`, pokrece sintezu, ALU behavioral simulaciju, Zbb demo, RV32I regresiju i prosireni CPU demo
+- dokaz prolaza su linije `SYNTH_STATUS=synth_design Complete!`, `ALU extended tests passed`, `Zbb CPU demo test passed`, `rv32i regression CPU test passed`, `Extended CPU demo test passed` i `Vivado checks completed successfully.`
+- detaljno uputstvo za GUI pokretanje i screenshot dokaz je u `output/vivado_uputstvo_za_pokretanje_2026-05-09.md`
+
 Sta je provereno:
 - GHDL simulacija za nove instrukcije
 - CPU-level simulacija za Zbb demo
