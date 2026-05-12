@@ -28,7 +28,10 @@ if (-not (Get-Command ghdl -ErrorAction SilentlyContinue)) {
 function Write-LogLine {
     param([string]$Line)
     Write-Host $Line
-    Add-Content -LiteralPath $script:logPath -Encoding UTF8 -Value $Line
+    [System.IO.File]::AppendAllText(
+        $script:logPath,
+        $Line + [System.Environment]::NewLine,
+        [System.Text.UTF8Encoding]::new($false))
 }
 
 function Invoke-Ghdl {
@@ -39,7 +42,10 @@ function Invoke-Ghdl {
     & ghdl @GhdlArgs 2>&1 | ForEach-Object {
         $line = $_.ToString()
         Write-Host $line
-        Add-Content -LiteralPath $script:logPath -Encoding UTF8 -Value $line
+        [System.IO.File]::AppendAllText(
+            $script:logPath,
+            $line + [System.Environment]::NewLine,
+            [System.Text.UTF8Encoding]::new($false))
     }
     if ($LASTEXITCODE -ne 0) {
         throw "GHDL komanda nije prosla: ghdl $($GhdlArgs -join ' ')"
