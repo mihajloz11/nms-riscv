@@ -221,17 +221,12 @@ architecture behavioral of ALU is
    signal res_s : std_logic_vector(WIDTH-1 downto 0);
 begin
 
-   -- sabiranje
    add_res <= std_logic_vector(unsigned(a_i) + unsigned(b_i));
-   -- oduzimanje
    sub_res <= std_logic_vector(unsigned(a_i) - unsigned(b_i));
-   -- bitovski and
    and_res <= a_i and b_i;
    -- andn = rs1 and not rs2
    andn_res <= a_i and (not b_i);
-   -- bitovski xor
    xor_res <= a_i xor b_i;
-   -- bitovski or
    or_res <= a_i or b_i;
    -- orn = rs1 or not rs2
    orn_res <= a_i or (not b_i);
@@ -257,7 +252,7 @@ begin
    -- rol i ror koriste samo 5 nizih bita drugog operanda
    rol_res <= rotate_left_simple(a_i, get_shift_amount(b_i(4 downto 0)));
    ror_res <= rotate_right_simple(a_i, get_shift_amount(b_i(4 downto 0)));
-   -- sign extension iz manjeg dela registra
+   -- sign extension iz manjeg dijela registra
    signextb_res <= sign_extend_byte(a_i);
    signexth_res <= sign_extend_halfword(a_i);
    -- m prosirenje
@@ -308,7 +303,7 @@ begin
    zero_o <= '1' when res_s = std_logic_vector(to_unsigned(0, WIDTH)) else
              '0';
 
-   -- prekoracenje se desava kada ulazi imaju isti znak, a izlaz razlicit.
+   -- prekoracenje se desava kada ulazi imaju isti znak, a izlaz razlicit
    of_o <= '1' when ((op_i = add_op and (a_i(WIDTH-1) = b_i(WIDTH-1)) and ((a_i(WIDTH-1) xor res_s(WIDTH-1)) = '1')) or
                      (op_i = sub_op and (a_i(WIDTH-1) /= b_i(WIDTH-1)) and ((a_i(WIDTH-1) xor res_s(WIDTH-1)) = '1'))) else
            '0';

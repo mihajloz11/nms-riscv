@@ -63,7 +63,7 @@ begin
    end process;
 
    -- kombinaciona logika
-   -- sabirac za uvecavanje programskog brojaca (sledeca instrukcija)
+   -- sabirac za uvecavanje programskog brojaca (sljedeca instrukcija)
    pc_adder_s <= std_logic_vector(unsigned(pc_reg_s) + to_unsigned(4, DATA_WIDTH));
    -- sabirac za uslovne skokove
    branch_adder_s <= std_logic_vector(unsigned(immediate_extended_s) + unsigned(pc_reg_s));
@@ -71,7 +71,7 @@ begin
    jalr_adder_s <= std_logic_vector(unsigned(rs1_data_s) + unsigned(immediate_extended_s));
    jalr_next_s <= jalr_adder_s(31 downto 1) & '0';
 
-   -- za grananja gledamo funct3 polje i onda proveravamo odgovarajuci uslov.
+   -- za grananja gledamo funct3 polje i onda provjeravamo odgovarajuci uslov
    process (instruction_s, a_s, b_s) is
    begin
       branch_condition_o <= '0';
@@ -105,15 +105,15 @@ begin
       end case;
    end process;
 
-   -- mux koji odredjuje sledecu vrednost za programski brojac.
-   -- ako se ne desi skok programski brojac se uvecava za 4.
+   -- mux koji odredjuje sljedecu vrijednost za programski brojac
+   -- ako se ne desi skok programski brojac se uvecava za 4
    with pc_next_sel_i select
       pc_next_s <= pc_adder_s when "00",
                    branch_adder_s when "01",
                    jalr_next_s when "10",
                    pc_adder_s when others;
 
-   -- mux koji odredjuje prvi operand alu jedinice.
+   -- mux koji odredjuje prvi operand alu jedinice
    process (alu_src_a_i, rs1_data_s, pc_reg_s) is
    begin
       case alu_src_a_i is
@@ -126,11 +126,11 @@ begin
       end case;
    end process;
 
-   -- mux koji odredjuje sledecu vrednost za b ulaz alu jedinice.
+   -- mux koji odredjuje sljedecu vrijednost za b ulaz alu jedinice
    b_s <= rs2_data_s when alu_src_i = '0' else
           immediate_extended_s;
 
-   -- za load instrukcije uzima se onoliko bita koliko instrukcija trazi.
+   -- za load instrukcije uzima se onoliko bita koliko instrukcija trazi
    process (instruction_s, data_mem_read_i) is
    begin
       load_data_s <= data_mem_read_i;

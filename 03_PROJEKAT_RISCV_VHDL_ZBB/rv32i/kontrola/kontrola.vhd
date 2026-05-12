@@ -64,7 +64,7 @@ begin
          funct12_i => instruction_i(31 downto 20),
          alu_op_o => alu_op_o);
 
-   -- za sb se upisuje 1 bajt, za sh 2 bajta, a za sw sva 4 bajta.
+   -- za sb se upisuje 1 bajt, za sh 2 bajta, a za sw sva 4 bajta
    process (data_mem_we_s, instruction_i) is
    begin
       data_mem_we_o <= (others => '0');

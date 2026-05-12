@@ -299,7 +299,7 @@ begin
    monitor_proc : process
       variable store_index_v : natural := 0;
    begin
-      -- provjerava redosled i vrednosti store operacija koje cpu pravi
+      -- provjerava redoslijed i vrijednosti store operacija koje cpu pravi
       wait until reset = '1';
       loop
          wait until rising_edge(clk);

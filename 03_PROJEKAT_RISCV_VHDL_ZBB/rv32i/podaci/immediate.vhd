@@ -10,7 +10,6 @@ end entity;
 architecture behavioral of immediate is
    signal opcode : std_logic_vector(6 downto 0);
    signal instruction_type : std_logic_vector(2 downto 0);
-   -- signal funct3 : std_logic_vector(2 downto 0);
    signal extension : std_logic_vector(19 downto 0);
 
    constant r_type_instruction : std_logic_vector(2 downto 0) := "000";
@@ -19,18 +18,12 @@ architecture behavioral of immediate is
    constant b_type_instruction : std_logic_vector(2 downto 0) := "011";
    constant u_type_instruction : std_logic_vector(2 downto 0):= "100";
    constant j_type_instruction : std_logic_vector(2 downto 0):= "101";
-   -- otkomentarisati ukoliko je to potrebno prilikom prosirivanja seta instrukcija
-
-   -- constant shamt_instruction : std_logic_vector(2 downto 0):= "110";
-   -- constant fence_ecall_ebreak : std_logic_vector(2 downto 0):= "111";
 
 begin
 
    opcode <= instruction_i(6 downto 0);
    extension <= (others => instruction_i(31));
-   -- funct3 <= instruction_i(14 downto 12);
 
-   -- u odnosu na opcode pronadji instrukciju
    process (opcode) is
    begin
       case opcode(6 downto 2) is
@@ -57,7 +50,7 @@ begin
       end case;
    end process;
 
-   -- na osnovu instrukcije iz prethodnog procesa, izdvoji i prosiri konstantu(immediate polje) na 32 bita
+   -- izdvoji i prosiri konstantu(immediate polje) na 32 bita
    process (instruction_i, instruction_type, extension) is
    begin
       case instruction_type is

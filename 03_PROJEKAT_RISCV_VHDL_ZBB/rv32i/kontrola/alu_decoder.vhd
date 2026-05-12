@@ -11,7 +11,7 @@ entity alu_decoder is
       funct3_i : in std_logic_vector(2 downto 0);
       funct7_i : in std_logic_vector(6 downto 0);
       funct12_i : in std_logic_vector(11 downto 0);
-      -- izlazi ka datapath-u
+      -- izlazi ka datapathu
       alu_op_o : out std_logic_vector(4 downto 0));
 end entity;
 
@@ -21,7 +21,7 @@ begin
    -- bira alu operaciju za trenutnu instrukciju
    alu_dec : process(alu_2bit_op_i, funct3_i, funct7_i, funct12_i) is
    begin
-      alu_op_o <= "00000"; -- podrazumevana vrednost
+      alu_op_o <= "00000"; -- podrazumijevana vrijednost
 
       case alu_2bit_op_i is
          when "00" =>

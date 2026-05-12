@@ -36,7 +36,7 @@ begin
 
    control_dec : process(opcode_i) is
    begin
-      -- podrazumevane vrednost
+      -- podrazumijevane vrijednosti
       branch_o <= '0';
       mem_to_reg_o <= '0';
       data_mem_we_o <= '0';
@@ -66,7 +66,7 @@ begin
             alu_2bit_op_o <= "00";
             data_mem_we_o <= '1';
             alu_src_o <= '1';
-         when R_TYPE_OPCODE_C => -- r type: add, sub, and, or, xor...
+         when R_TYPE_OPCODE_C => -- r type: add, sub, and, or, xor
             alu_2bit_op_o <= "10";
             rd_we_o <= '1';
          when LUI_OPCODE_C => -- lui: rd = immediate
@@ -74,7 +74,7 @@ begin
             alu_src_a_o <= "10";
             alu_src_o <= '1';
             rd_we_o <= '1';
-         when I_TYPE_OPCODE_C => -- i type: addi, xori, slli, clz...
+         when I_TYPE_OPCODE_C => -- i type: addi, xori, slli, clz
             alu_2bit_op_o <= "11";
             alu_src_o <= '1';
             rd_we_o <= '1';
